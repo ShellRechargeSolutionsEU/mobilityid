@@ -1,0 +1,17 @@
+# Idea project files
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Emacs
+*~
+*#
+.#*
+.ensime
+.ensime_lucene
+TAGS
+tags
+
+target
+logs
