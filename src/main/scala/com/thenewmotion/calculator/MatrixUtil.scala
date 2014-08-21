@@ -1,14 +1,9 @@
 package com.thenewmotion.calculator
 
-import org.apache.commons.math3.linear.{LUDecomposition, Array2DRowRealMatrix, RealMatrix}
-
-import scalaz.{-\/, \/-}
 import scalaz.syntax.equal._
 import scalaz.std.anyVal._
 
-import LookupTables._
-
-object MatriceUtil {
+private[calculator] object MatrixUtil {
 
   type Vec = (Int, Int)
   type Mx = (Vec, Vec)
@@ -37,21 +32,4 @@ object MatriceUtil {
   val p2s: Array[Mx] = 1.to(14).map(mxPow(p2, _, 3)).toArray
 
   val negP2minus15 = ((0, 2), (2, 1)) // -p2^(-15)
-
-  def calculateCheckDigit(code: String): Char = {
-
-    def sumEq(ps: Array[Mx], part: Mx => Vec, mod: Int, code: String): Vec = {
-      val vecs = 0.to(13).map{ x =>
-        val qr: Vec = part(encoding.getOrElse(code.charAt(x), sys.error("Unencodable character")))
-        val p: Mx = ps(x)
-        vecXMx(qr, p, mod)
-      }
-      vecs.foldLeft((0, 0))(sumVec(_, _, mod))
-    }
-
-    val t1 = sumEq(p1s, _._1, 2, code)
-    val t2 = vecXMx(sumEq(p2s, _._2, 3, code), negP2minus15, 3)
-
-    decoding.getOrElse((t1, t2), sys.error("Undecodable matrix"))
-  }
 }

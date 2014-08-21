@@ -1,8 +1,8 @@
 package com.thenewmotion.calculator
 
-import MatriceUtil.Mx
+import MatrixUtil.Mx
 
-object LookupTables {
+private[calculator] object LookupTables {
 
   def decode(x: Int): Mx = {
     val r2 = x / 16
