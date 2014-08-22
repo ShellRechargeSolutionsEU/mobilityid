@@ -1,8 +1,5 @@
 package com.thenewmotion.iso_id_utils.calculator
 
-import scalaz.syntax.equal._
-import scalaz.std.anyVal._
-
 private[calculator] object MatrixUtil {
 
   type Vec = (Int, Int)
