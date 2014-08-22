@@ -1,12 +1,8 @@
 package com.thenewmotion.services
 
-import java.lang.RuntimeException
-
 import com.thenewmotion.model.{DinId, EvcoId}
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
-
-import scalaz.{-\/, \/-}
 
 class ContractIdServiceTest extends SpecificationWithJUnit {
 

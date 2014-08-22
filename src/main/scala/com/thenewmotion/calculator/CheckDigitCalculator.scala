@@ -9,7 +9,8 @@ object CheckDigitCalculator {
 
     def sumEq(ps: Array[Mx], part: Mx => Vec, code: String): Vec = {
       val vecs = 0.to(13).map{ x =>
-        val qr: Vec = part(encoding.getOrElse(code.charAt(x), sys.error("Unencodable character")))
+        val char = code.charAt(x)
+        val qr: Vec = part(encoding.getOrElse(char, sys.error(s"Unencodable character: $char.")))
         val p: Mx = ps(x)
         vecXMx(qr, p)
       }
@@ -24,7 +25,7 @@ object CheckDigitCalculator {
       case (r1, r2) => (r1 % 3, r2 % 3)
     }
 
-    decoding.getOrElse((t1, t2), sys.error("Undecodable matrix"))
+    decoding.getOrElse((t1, t2), sys.error(s"Undecodable matrix: ${(t1, t2)}."))
   }
 }
 
