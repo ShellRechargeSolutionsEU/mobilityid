@@ -1,4 +1,4 @@
-package com.thenewmotion.model
+package com.thenewmotion.iso_id_utils.model
 
 import scalaz.syntax.equal._
 import scalaz.std.string._

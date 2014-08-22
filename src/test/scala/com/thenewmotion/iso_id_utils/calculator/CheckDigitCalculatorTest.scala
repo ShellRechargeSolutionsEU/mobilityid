@@ -1,4 +1,4 @@
-package com.thenewmotion.calculator
+package com.thenewmotion.iso_id_utils.calculator
 
 import org.specs2.mutable.SpecificationWithJUnit
 

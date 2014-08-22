@@ -1,8 +1,9 @@
-package com.thenewmotion.services
+package com.thenewmotion.iso_id_utils.services
 
-import com.thenewmotion.model.{DinId, EvcoId}
+import com.thenewmotion.iso_id_utils.model.{DinId, EvcoId}
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
+import scalaz.{\/-, -\/}
 
 class ContractIdServiceTest extends SpecificationWithJUnit {
 
@@ -49,56 +50,56 @@ class ContractIdServiceTest extends SpecificationWithJUnit {
       val hyphenatedId = "DE-8AA-123456-7 "
       val expectedNormalizedId = "DE8AA1234567"
 
-      testInstance.normalizeDinId(hyphenatedId) must_== expectedNormalizedId
+      testInstance.normalizeDinId(hyphenatedId) must_== \/-(expectedNormalizedId)
     }
 
     "normalize Evco ID" in new TestScope {
       val hyphenatedId = "DE-8AA-CA2B3C4D5-N "
       val expectedNormalizedId = "DE8AACA2B3C4D5N"
 
-      testInstance.normalizeEvcoId(hyphenatedId) must_== expectedNormalizedId
+      testInstance.normalizeEvcoId(hyphenatedId) must_== \/-(expectedNormalizedId)
     }
 
     "parse hyphenated EvcoId with check digit" in new TestScope {
       val hyphenatedId = "DE-8AA-CA2B3C4D5-N "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", Some("N"))
 
-      testInstance.parseEvcoId(hyphenatedId) must_== expectedEvcoId
+      testInstance.parseEvcoId(hyphenatedId) must_== \/-(expectedEvcoId)
     }
 
     "parse hyphenated EvcoId without check digit" in new TestScope {
       val hyphenatedId = "DE-8AA-CA2B3C4D5 "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", None)
 
-      testInstance.parseEvcoId(hyphenatedId) must_== expectedEvcoId
+      testInstance.parseEvcoId(hyphenatedId) must_== \/-(expectedEvcoId)
     }
 
     "parse EvcoId with check digit" in new TestScope {
       val id = "DE8AACA2B3C4D5N "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", Some("N"))
 
-      testInstance.parseEvcoId(id) must_== expectedEvcoId
+      testInstance.parseEvcoId(id) must_== \/-(expectedEvcoId)
     }
 
     "parse EvcoId without check digit" in new TestScope {
       val id = "DE8AACA2B3C4D5 "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", None)
 
-      testInstance.parseEvcoId(id) must_== expectedEvcoId
+      testInstance.parseEvcoId(id) must_== \/-(expectedEvcoId)
     }
 
     "not parse EvcoId" in new TestScope {
       val id = "qwqwwswqes"
       val errMsg = s"Can't parse EvcoId: qwqwwswqes."
 
-      testInstance.parseEvcoId(id) must throwA(new RuntimeException(errMsg))
+      testInstance.parseEvcoId(id) must_== -\/(errMsg)
     }
 
     "convert EvcoId to DinId" in new TestScope {
       val evcoId = EvcoId("DE", "8AA", "001234567", Some("D"))
       val expectedDinId = DinId("DE", "8AA", "123456", "7")
 
-      testInstance.convertEvcoIdToDinId(evcoId) must_== expectedDinId
+      testInstance.convertEvcoIdToDinId(evcoId) must_== \/-(expectedDinId)
     }
 
     "not convert EvcoId to DinId" in new TestScope {
@@ -106,7 +107,7 @@ class ContractIdServiceTest extends SpecificationWithJUnit {
       val expectedDinId = DinId("DE", "8AA", "123456", "7")
 
       val errMsg = s"EvcoId = ${evcoId.hyphenatedId} can't be converted to DinId."
-      testInstance.convertEvcoIdToDinId(evcoId) must throwA(new RuntimeException(errMsg))
+      testInstance.convertEvcoIdToDinId(evcoId) must_== -\/(errMsg)
     }
 
     "convert DinId to EvcoId" in new TestScope {

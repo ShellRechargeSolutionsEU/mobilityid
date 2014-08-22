@@ -9,3 +9,9 @@ addSbtPlugin("com.github.mpeltonen"    % "sbt-idea"                           % 
 
 // https://github.com/rtimush/sbt-updates
 addSbtPlugin("com.timushev.sbt"        % "sbt-updates"                        % "0.1.6")
+
+// https://github.com/guardian/sbt-teamcity-test-reporting-plugin
+addSbtPlugin("com.gu"                  % "sbt-teamcity-test-reporting-plugin" % "1.5"  )
+
+// https://github.com/arktekk/sbt-aether-deploy
+addSbtPlugin("no.arktekk.sbt"          % "aether-deploy"                      % "0.11" )
