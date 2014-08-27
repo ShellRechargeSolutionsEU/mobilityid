@@ -114,10 +114,22 @@ class ContractIdServiceTest extends SpecificationWithJUnit {
       val dinId = DinId("DE", "8AA", "123456", "7")
       val expectedEvcoId = EvcoId("DE", "8AA", "001234567", Some("0"))
 
-      testInstance.convertDinIdToEvcoId(dinId) must_== expectedEvcoId
+      testInstance.convertDinIdToEvcoId(dinId) must_== \/-(expectedEvcoId)
     }
 
+    "convert text number to Evco ID" in new TestScope {
+      val dinIdNumber = "DE8AA1234567"
+      val expectedEvcoId = EvcoId("DE", "8AA", "001234567", Some("0"))
 
+      testInstance.dinIdToEvcoId(dinIdNumber) must_== \/-(expectedEvcoId)
+    }
+
+    "convert text number to Din ID" in new TestScope {
+      val evcoIdNumber = "DE8AA0012345670"
+      val expectedDinId = DinId("DE", "8AA", "123456", "7")
+
+      testInstance.evcoIdToDinId(evcoIdNumber) must_== \/-(expectedDinId)
+    }
 
     class TestScope extends Scope {
       val testInstance = new ContractIdService

@@ -24,8 +24,7 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
 libraryDependencies ++= {
   Seq(
-    "com.typesafe.scala-logging"     %% "scala-logging-slf4j"  % "2.1.2",
-    "org.scalaz"                     %% "scalaz-core"          % "7.1.0",
-    "org.specs2"                     %% "specs2"               % "2.4.1" % "test"
+    "org.scalaz"                     %% "scalaz-core"          % "7.0.6",
+    "org.specs2"                     %% "specs2"               % "2.3.13" % "test"
   )
 }

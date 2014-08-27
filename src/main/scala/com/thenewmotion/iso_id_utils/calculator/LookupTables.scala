@@ -5,20 +5,18 @@ import MatrixUtil.Mx
 private[calculator] object LookupTables {
 
   def decode(x: Int): Mx = {
-    val r2 = x / 16
-    val x2 = x % 16
-    val r1 = x2 / 4
-    val x3 = x2 % 4
-    val q2 = x3 / 2
-    val q1 = x3 % 2
-    ((q1, q2), (r1, r2))
+    val r2 = x >> 4
+    val x2 = x & 15
+    val r1 = x2 >> 2
+    val x3 = x2 & 3
+    val q2 = x3 >> 1
+    val q1 = x3 & 1
+    Mx(q1, q2, r1, r2)
   }
 
-  def encode(x: Mx): Int = x match {
-    case ((q1, q2), (r1, r2)) => q1 + q2 * 2 + r1 * 4 + r2 * 16
-  }
+  def encode(mx: Mx): Int = mx.m11 + (mx.m12 << 1) + (mx.m21 << 2) + (mx.m22 << 4)
 
-  val encoding = Map[Char, Int](
+  val encoding: Map[Char, Mx] = Map[Char, Int](
       '0' -> 0, '1' -> 16, '2' -> 32,
       '3' -> 4, '4' -> 20, '5' -> 36,
       '6' -> 8, '7' -> 24, '8' -> 40,
@@ -33,5 +31,5 @@ private[calculator] object LookupTables {
       'X' -> 11, 'Y' -> 27, 'Z' -> 43
     ).mapValues(decode)
 
-  val decoding = encoding.map(_.swap)
+  val decoding: Map[Mx, Char] = encoding.map(_.swap)
 }

@@ -7,25 +7,25 @@ private[iso_id_utils] object CheckDigitCalculator {
 
   def calculateCheckDigit(code: String): Char = {
 
-    def sumEq(ps: Array[Mx], part: Mx => Vec, code: String): Vec = {
-      val vecs = 0.to(13).map{ x =>
+    def sumEq(ps: Array[Mx], part: Mx => Vec): Vec = {
+      var sum = Vec(0, 0)
+      var x = 0
+      while(x < ps.length) {
         val char = code.charAt(x)
-        val qr: Vec = part(encoding.getOrElse(char, sys.error(s"Unencodable character: $char.")))
-        val p: Mx = ps(x)
-        vecXMx(qr, p)
+        val qr: Vec = part(encoding.getOrElse(char, sys.error(s"Invalid character: $char.")))
+        sum = sum + (qr * ps(x))
+        x += 1
       }
-      vecs.foldLeft((0, 0))(sumVec)
+      sum
     }
 
-    val t1 = sumEq(p1s, _._1, code) match {
-      case (q1 ,q2) => (q1 % 2, q2 % 2)
+    val mx15 = {
+      val t1 = sumEq(p1s, mx => Vec(mx.m11, mx.m12))
+      val t2 = sumEq(p2s, mx => Vec(mx.m21, mx.m22)) * negP2minus15
+      Mx(t1.v1 & 1, t1.v2 & 1, t2.v1 % 3, t2.v2 % 3)
     }
 
-    val t2 = vecXMx(sumEq(p2s, _._2, code), negP2minus15) match {
-      case (r1, r2) => (r1 % 3, r2 % 3)
-    }
-
-    decoding.getOrElse((t1, t2), sys.error(s"Undecodable matrix: ${(t1, t2)}."))
+    decoding.getOrElse(mx15, sys.error(s"Undecodable matrix: $mx15."))
   }
 }
 
