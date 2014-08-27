@@ -1,6 +1,3 @@
-//https://github.com/spray/sbt-revolver
-addSbtPlugin("io.spray"                % "sbt-revolver"                       % "0.7.2")
-
 // https://github.com/sbt/sbt-release
 addSbtPlugin("com.github.gseitz"       % "sbt-release"                        % "0.8.3")
 
