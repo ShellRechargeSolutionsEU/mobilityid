@@ -1,5 +1,6 @@
 # Idea project files
 .idea
+.idea_modules
 *.iml
 *.ipr
 *.iws
