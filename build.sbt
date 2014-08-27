@@ -9,22 +9,21 @@ scalaVersion := "2.10.4"
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 resolvers ++= Seq(
-  "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/",
   "Nexus" at "http://nexus.thenewmotion.com/content/groups/public/",
   "Nexus Snapshots" at "http://nexus.thenewmotion.com/content/repositories/snapshots"
 )
 
 publishTo <<= version { v: String =>
-  val nexus = "http://nexus.thenewmotion.com/content/repositories/"
-  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "snapshots")
-  else                             Some("releases"  at nexus + "releases")
+  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at "http://nexus.thenewmotion.com/content/repositories/snapshots-public")
+  else                             Some("releases"  at "http://nexus.thenewmotion.com/content/repositories/releases-public")
 }
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
+releaseSettings
+
 libraryDependencies ++= {
   Seq(
-    "org.scalaz"                     %% "scalaz-core"          % "7.0.6",
     "org.specs2"                     %% "specs2"               % "2.3.13" % "test"
   )
 }

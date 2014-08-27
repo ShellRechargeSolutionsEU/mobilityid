@@ -3,7 +3,6 @@ package com.thenewmotion.iso_id_utils.services
 import com.thenewmotion.iso_id_utils.model.{DinId, EvcoId}
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
-import scalaz.{\/-, -\/}
 
 class ContractIdServiceTest extends SpecificationWithJUnit {
 
@@ -50,85 +49,83 @@ class ContractIdServiceTest extends SpecificationWithJUnit {
       val hyphenatedId = "DE-8AA-123456-7 "
       val expectedNormalizedId = "DE8AA1234567"
 
-      testInstance.normalizeDinId(hyphenatedId) must_== \/-(expectedNormalizedId)
+      testInstance.normalizeDinId(hyphenatedId) must_== Some(expectedNormalizedId)
     }
 
     "normalize Evco ID" in new TestScope {
       val hyphenatedId = "DE-8AA-CA2B3C4D5-N "
       val expectedNormalizedId = "DE8AACA2B3C4D5N"
 
-      testInstance.normalizeEvcoId(hyphenatedId) must_== \/-(expectedNormalizedId)
+      testInstance.normalizeEvcoId(hyphenatedId) must_== Some(expectedNormalizedId)
     }
 
     "parse hyphenated EvcoId with check digit" in new TestScope {
       val hyphenatedId = "DE-8AA-CA2B3C4D5-N "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", Some("N"))
 
-      testInstance.parseEvcoId(hyphenatedId) must_== \/-(expectedEvcoId)
+      testInstance.parseEvcoId(hyphenatedId) must_== Some(expectedEvcoId)
     }
 
     "parse hyphenated EvcoId without check digit" in new TestScope {
       val hyphenatedId = "DE-8AA-CA2B3C4D5 "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", None)
 
-      testInstance.parseEvcoId(hyphenatedId) must_== \/-(expectedEvcoId)
+      testInstance.parseEvcoId(hyphenatedId) must_== Some(expectedEvcoId)
     }
 
     "parse EvcoId with check digit" in new TestScope {
       val id = "DE8AACA2B3C4D5N "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", Some("N"))
 
-      testInstance.parseEvcoId(id) must_== \/-(expectedEvcoId)
+      testInstance.parseEvcoId(id) must_== Some(expectedEvcoId)
     }
 
     "parse EvcoId without check digit" in new TestScope {
       val id = "DE8AACA2B3C4D5 "
       val expectedEvcoId = EvcoId("DE", "8AA", "CA2B3C4D5", None)
 
-      testInstance.parseEvcoId(id) must_== \/-(expectedEvcoId)
+      testInstance.parseEvcoId(id) must_== Some(expectedEvcoId)
     }
 
     "not parse EvcoId" in new TestScope {
       val id = "qwqwwswqes"
-      val errMsg = s"Can't parse EvcoId: qwqwwswqes."
 
-      testInstance.parseEvcoId(id) must_== -\/(errMsg)
+      testInstance.parseEvcoId(id) must_== None
     }
 
     "convert EvcoId to DinId" in new TestScope {
       val evcoId = EvcoId("DE", "8AA", "001234567", Some("D"))
       val expectedDinId = DinId("DE", "8AA", "123456", "7")
 
-      testInstance.convertEvcoIdToDinId(evcoId) must_== \/-(expectedDinId)
+      testInstance.convertEvcoIdToDinId(evcoId) must_== Some(expectedDinId)
     }
 
     "not convert EvcoId to DinId" in new TestScope {
       val evcoId = EvcoId("DE", "8AA", "CA1234567", Some("D"))
       val expectedDinId = DinId("DE", "8AA", "123456", "7")
 
-      val errMsg = s"EvcoId = ${evcoId.hyphenatedId} can't be converted to DinId."
-      testInstance.convertEvcoIdToDinId(evcoId) must_== -\/(errMsg)
+      testInstance.convertEvcoIdToDinId(evcoId) must_== None
     }
 
     "convert DinId to EvcoId" in new TestScope {
       val dinId = DinId("DE", "8AA", "123456", "7")
       val expectedEvcoId = EvcoId("DE", "8AA", "001234567", Some("0"))
 
-      testInstance.convertDinIdToEvcoId(dinId) must_== \/-(expectedEvcoId)
+      testInstance.convertDinIdToEvcoId(dinId) must_== Some(expectedEvcoId)
     }
 
     "convert text number to Evco ID" in new TestScope {
       val dinIdNumber = "DE8AA1234567"
       val expectedEvcoId = EvcoId("DE", "8AA", "001234567", Some("0"))
 
-      testInstance.dinIdToEvcoId(dinIdNumber) must_== \/-(expectedEvcoId)
+      testInstance.dinIdToEvcoId(dinIdNumber) must_== Some(expectedEvcoId)
     }
 
     "convert text number to Din ID" in new TestScope {
       val evcoIdNumber = "DE8AA0012345670"
       val expectedDinId = DinId("DE", "8AA", "123456", "7")
 
-      testInstance.evcoIdToDinId(evcoIdNumber) must_== \/-(expectedDinId)
+      testInstance.evcoIdToDinId(evcoIdNumber) must_== Some(expectedDinId)
     }
 
     class TestScope extends Scope {
