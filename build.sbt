@@ -1,7 +1,5 @@
 organization := "com.thenewmotion"
 
-version := "0.1-SNAPSHOT"
-
 name := "iso-id-utils"
 
 scalaVersion := "2.10.4"
