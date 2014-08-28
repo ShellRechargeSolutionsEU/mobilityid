@@ -4,6 +4,8 @@ name := "iso-id-utils"
 
 scalaVersion := "2.10.4"
 
+crossScalaVersions := Seq("2.10.4", "2.11.2")
+
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 resolvers ++= Seq(
@@ -25,3 +27,5 @@ libraryDependencies ++= {
     "org.specs2"                     %% "specs2"               % "2.3.13" % "test"
   )
 }
+
+licenses += ("Apache License, Version 2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
