@@ -4,7 +4,7 @@ import MatrixUtil.Mx
 
 private[calculator] object LookupTables {
 
-  def decode(x: Int): Mx = Mx(x & 1, (x >> 1) & 1, (x >> 2) & 1, x >> 4)
+  def decode(x: Int): Mx = Mx(x & 1, (x >> 1) & 1, (x >> 2) & 3, x >> 4)
 
   def encode(mx: Mx): Int = mx.m11 + (mx.m12 << 1) + (mx.m21 << 2) + (mx.m22 << 4)
 
