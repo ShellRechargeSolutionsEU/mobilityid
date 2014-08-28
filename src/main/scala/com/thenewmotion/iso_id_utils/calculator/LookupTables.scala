@@ -4,15 +4,7 @@ import MatrixUtil.Mx
 
 private[calculator] object LookupTables {
 
-  def decode(x: Int): Mx = {
-    val r2 = x >> 4
-    val x2 = x & 15
-    val r1 = x2 >> 2
-    val x3 = x2 & 3
-    val q2 = x3 >> 1
-    val q1 = x3 & 1
-    Mx(q1, q2, r1, r2)
-  }
+  def decode(x: Int): Mx = Mx(x & 1, (x >> 1) & 1, (x >> 2) & 1, x >> 4)
 
   def encode(mx: Mx): Int = mx.m11 + (mx.m12 << 1) + (mx.m21 << 2) + (mx.m22 << 4)
 

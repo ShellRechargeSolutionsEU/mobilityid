@@ -1,9 +1,18 @@
-# Idea project files
+# Sbt
+target
+
+# Idea
 .idea
 .idea_modules
 *.iml
 *.ipr
 *.iws
+
+# Eclipse
+.project
+.classpath
+.settings
+.scala_dependencies
 
 # Emacs
 *~
@@ -13,6 +22,3 @@
 .ensime_lucene
 TAGS
 tags
-
-target
-logs
