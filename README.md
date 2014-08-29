@@ -15,7 +15,7 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ```
-libraryDependencies += "com.thenewmotion" %% "evcoid" % "0.1"
+libraryDependencies += "com.thenewmotion" %% "evcoid" % "0.3"
 ```
 
 ### Documentation and getting help ###
