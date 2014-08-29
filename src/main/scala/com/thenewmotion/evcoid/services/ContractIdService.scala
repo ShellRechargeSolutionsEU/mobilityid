@@ -1,7 +1,7 @@
-package com.thenewmotion.iso_id_utils.services
+package com.thenewmotion.evcoid.services
 
-import com.thenewmotion.iso_id_utils.model.{EvcoId, DinId}
-import com.thenewmotion.iso_id_utils.calculator.CheckDigitCalculator._
+import com.thenewmotion.evcoid.model.{EvcoId, DinId}
+import com.thenewmotion.evcoid.calculator.CheckDigitCalculator._
 import scala.util.{Failure, Success, Try}
 
 class ContractIdService {

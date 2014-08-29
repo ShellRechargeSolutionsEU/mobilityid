@@ -1,6 +1,6 @@
-package com.thenewmotion.iso_id_utils.services
+package com.thenewmotion.evcoid.services
 
-import com.thenewmotion.iso_id_utils.model.{DinId, EvcoId}
+import com.thenewmotion.evcoid.model.{DinId, EvcoId}
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.specification.Scope
 

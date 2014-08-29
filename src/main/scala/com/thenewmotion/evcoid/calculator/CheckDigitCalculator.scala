@@ -1,9 +1,9 @@
-package com.thenewmotion.iso_id_utils.calculator
+package com.thenewmotion.evcoid.calculator
 
-import com.thenewmotion.iso_id_utils.calculator.LookupTables._
-import com.thenewmotion.iso_id_utils.calculator.MatrixUtil._
+import com.thenewmotion.evcoid.calculator.LookupTables._
+import com.thenewmotion.evcoid.calculator.MatrixUtil._
 
-private[iso_id_utils] object CheckDigitCalculator {
+private[evcoid] object CheckDigitCalculator {
 
   def calculateCheckDigit(code: String): Char = {
 

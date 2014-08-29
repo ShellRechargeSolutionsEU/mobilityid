@@ -1,4 +1,4 @@
-package com.thenewmotion.iso_id_utils.model
+package com.thenewmotion.evcoid.model
 
 object Code {
   val separator = "-"

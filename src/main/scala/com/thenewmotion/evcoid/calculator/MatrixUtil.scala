@@ -1,4 +1,4 @@
-package com.thenewmotion.iso_id_utils.calculator
+package com.thenewmotion.evcoid.calculator
 
 private[calculator] object MatrixUtil {
 

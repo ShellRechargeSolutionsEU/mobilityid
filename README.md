@@ -1,4 +1,4 @@
-## ISO ID Utils [![Build Status](https://travis-ci.org/thenewmotion/iso-id-utils.png?branch=master)](https://travis-ci.org/thenewmotion/iso-id-utils)
+## EVCO ID Utils [![Build Status](https://travis-ci.org/thenewmotion/evcoid.png?branch=master)](https://travis-ci.org/thenewmotion/evcoid)
 
 ### About the library ###
 
@@ -15,7 +15,7 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ```
-libraryDependencies += "com.thenewmotion" %% "iso-id-utils" % "0.1"
+libraryDependencies += "com.thenewmotion" %% "evcoid" % "0.1"
 ```
 
 ### Documentation and getting help ###

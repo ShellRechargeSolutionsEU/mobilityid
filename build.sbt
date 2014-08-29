@@ -1,6 +1,6 @@
 organization := "com.thenewmotion"
 
-name := "iso-id-utils"
+name := "evcoid"
 
 scalaVersion := "2.10.4"
 
@@ -15,9 +15,10 @@ resolvers ++= Seq(
   "Nexus Snapshots" at "http://nexus.thenewmotion.com/content/repositories/snapshots"
 )
 
-publishTo <<= version { v: String =>
-  if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at "http://nexus.thenewmotion.com/content/repositories/snapshots-public")
-  else                             Some("releases"  at "http://nexus.thenewmotion.com/content/repositories/releases-public")
+publishTo := {
+  val nexus = "http://nexus.thenewmotion.com/content/repositories/"
+  if (isSnapshot.value) Some("snapshots" at nexus + "snapshots-public")
+  else Some("releases"  at nexus + "releases-public")
 }
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
