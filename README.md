@@ -2,7 +2,8 @@
 
 ### About the library ###
 
-Scala utils which parse, validate and convert for Contract IDs according to ISO 15118-1 and DIN SPEC 91286 standards.
+Scala utils which parse, validate and convert electric mobility account
+identifier strings according to the ISO 15118-1 and DIN SPEC 91286 standards.
 
 ### Where to get it ###
 
