@@ -1,8 +1,8 @@
-package com.thenewmotion.evcoid.calculator
+package com.thenewmotion.evcoid
 
 import org.specs2.mutable.SpecificationWithJUnit
 
-class CheckDigitCalculatorTest extends SpecificationWithJUnit {
+class CheckDigitSpec extends SpecificationWithJUnit {
 
   "CheckDigitCalculator" should {
     "calculate check digits" in {
@@ -17,7 +17,7 @@ class CheckDigitCalculatorTest extends SpecificationWithJUnit {
         "DE8AA001234567"
       )
 
-      contractIds.map(CheckDigitCalculator.calculateCheckDigit) must_== "T24RZDM0".toList
+      contractIds.map(CheckDigit(_)) must_== "T24RZDM0".toList
     }
   }
 }
