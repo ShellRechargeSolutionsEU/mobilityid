@@ -1,4 +1,4 @@
-package com.thenewmotion.evcoid
+package com.thenewmotion.mobilityid
 
 import org.specs2.mutable.SpecificationWithJUnit
 

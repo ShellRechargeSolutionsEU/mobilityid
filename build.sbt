@@ -1,6 +1,6 @@
 organization := "com.thenewmotion"
 
-name := "evcoid"
+name := "mobilityid"
 
 scalaVersion := "2.10.4"
 

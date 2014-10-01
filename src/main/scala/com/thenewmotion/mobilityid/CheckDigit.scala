@@ -1,6 +1,6 @@
-package com.thenewmotion.evcoid
+package com.thenewmotion.mobilityid
 
-private[evcoid] object CheckDigit {
+private[mobilityid] object CheckDigit {
 
   import MatrixUtil._
   import LookupTables._
@@ -25,7 +25,7 @@ private[evcoid] object CheckDigit {
 
 }
 
-private[evcoid] object LookupTables {
+private[mobilityid] object LookupTables {
   import MatrixUtil.Matrix
 
   def decode(x: Int): Matrix = Matrix(x & 1, (x >> 1) & 1, (x >> 2) & 3, x >> 4)
@@ -50,7 +50,7 @@ private[evcoid] object LookupTables {
   val decoding: Map[Matrix, Char] = encoding.map(_.swap)
 }
 
-private[evcoid] object MatrixUtil {
+private[mobilityid] object MatrixUtil {
 
   case class Matrix(m11: Int, m12: Int, m21: Int, m22: Int) {
     def *(m: Matrix): Matrix =

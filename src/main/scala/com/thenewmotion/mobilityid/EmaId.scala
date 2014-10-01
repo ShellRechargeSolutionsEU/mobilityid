@@ -1,4 +1,4 @@
-package com.thenewmotion.evcoid
+package com.thenewmotion.mobilityid
 
 /**
  * An EMA-ID (electric mobility account identifier) as specified in ISO 15118-1.
@@ -18,7 +18,7 @@ class EmaId private (
   val instanceValue: String,
   val checkDigit: Character) {
 
-  import com.thenewmotion.evcoid.EmaId._
+  import com.thenewmotion.mobilityid.EmaId._
 
   require(countryCode.size == 2 && countryCode.forall(_.isLetter))
   require(providerId.size == 3 && providerId.forall(_.isLetterOrDigit))
