@@ -33,6 +33,11 @@ class EmaIdSpec extends SpecificationWithJUnit {
       ) mustEqual List.fill(5)(None)
     }
 
+    // ideally we'd compute the check digit but the algorithm is behind a paywall
+    "return None when trying to create an EmaId from a DIN ID without a check digit" in {
+      EmaId("NL-TNM-123456") must beNone
+    }
+
     "render an EMAID as a compact string without dashes" in {
       EmaId("NL", "TNM", "000722345").toCompactString mustEqual "NLTNM000722345X"
     }

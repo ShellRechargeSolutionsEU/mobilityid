@@ -16,7 +16,7 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ```
-libraryDependencies += "com.thenewmotion" %% "evcoid" % "0.3"
+libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.4"
 ```
 
 
@@ -82,8 +82,7 @@ scala> emaId.toString
 res16: String = NL-TNM-012345678-W
 ```
 
-
 ### Documentation and getting help ###
 
-The algorithm of check digit calculation for ISO 15118-1 Contract IDs is described here:  
+This library is using the algorithm of check digit calculation for ISO 15118-1 Contract IDs described here:
 http://www.ochp.eu/id-validator/e-mobility-ids_evcoid_check-digit-calculation_explanation/

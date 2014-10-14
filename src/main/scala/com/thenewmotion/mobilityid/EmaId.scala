@@ -91,6 +91,7 @@ object EmaId {
    * Create an EMAID from a string representation
    *
    * @param emaId An EMAID in DIN SPEC 91286 or ISO 15118 format, with or without dashes and with or without check digit
+   *              For a DIN SPEC 91286 ID the check digit is required.
    * @return An EmaId object representing the same EMAID as the input string, or None if the given string is invalid
    *         (ie wrong length, illegal characters or wrong check digit)
    */
@@ -102,7 +103,7 @@ object EmaId {
           apply(country, prov, instance, check.head)
         } else
           apply(country, prov, instance)
-      case RegexForDinId(country, prov, instance, check) =>
+      case RegexForDinId(country, prov, instance, check) if check != null =>
         apply(country, prov, dinInstanceToIsoInstance(instance, check))
     }
 
