@@ -19,5 +19,14 @@ class CheckDigitSpec extends SpecificationWithJUnit {
 
       contractIds.map(CheckDigit(_)) must_== "T24RZDM0".toList
     }
+
+    "fail with IllegalArgumentException on malformed input" in {
+      CheckDigit("Европарулит123") must throwA[IllegalArgumentException]
+      CheckDigit("DE٨٣DUIEN٨٣QGZ") must throwA[IllegalArgumentException]
+      CheckDigit("Å∏@*(Td\uD83D\uDE3BgaR^&(%") must throwA[IllegalArgumentException]
+      CheckDigit("Å∏@*(Td\uD83D\uDE3BgR^&(%") must throwA[IllegalArgumentException]
+      CheckDigit("") must throwA[IllegalArgumentException]
+      CheckDigit("DE8AA0012345678") must throwA[IllegalArgumentException]
+    }
   }
 }

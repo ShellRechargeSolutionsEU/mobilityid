@@ -16,12 +16,18 @@ class EmaIdSpec extends SpecificationWithJUnit {
       EmaId("NL", "T|M", "000122045") must throwA[IllegalArgumentException]
     }
 
+    "be case insensitive" in {
+      EmaId("Nl", "tnM", "000122045") mustEqual EmaId("NL", "TNM", "000122045")
+    }
+
     "create an EmaId from a string in any DIN SPEC 91286 or ISO 15118 format" in {
       List(EmaId("NL-TNM-000122045-U"),
         EmaId("NL-TNM-000122045-U"),
+        EmaId("Nl-TnM-000122045-U"),
+        EmaId("nl-TNm-000122045-u"),
         EmaId("NLTNM000122045"),
         /*           EmaId("NL-TNM-012204"), */ // TODO check digit computation for DIN IDs?
-        EmaId("NL-TNM-012204-5")) mustEqual List.fill(4)(Some(EmaId("NL", "TNM", "000122045")))
+        EmaId("NL-TNM-012204-5")) mustEqual List.fill(6)(Some(EmaId("NL", "TNM", "000122045")))
     }
 
     "return None when trying to create an EmaId from an invalid string" in {

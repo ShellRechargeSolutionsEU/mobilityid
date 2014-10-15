@@ -5,8 +5,10 @@ private[mobilityid] object CheckDigit {
   import MatrixUtil._
   import LookupTables._
 
-  def apply(code: String): Char = {
-    require(code.size == p1s.size && code.size == p2s.size && code.forall(_.isLetterOrDigit))
+  def apply(code: String): Char = applyToUpperCaseString(code.toUpperCase)
+
+  private[this] def applyToUpperCaseString(code: String): Char = {
+    require(code.size == p1s.size && code.size == p2s.size && code.forall(_.isAsciiUpperOrDigit))
 
     @annotation.tailrec
     def sumEq(ps: Array[Matrix], f: Matrix => Vec, v: Vec = Vec(0, 0), i: Int = 0): Vec = {
@@ -22,7 +24,6 @@ private[mobilityid] object CheckDigit {
     val m15 = Matrix(t1.v1 & 1, t1.v2 & 1, t2.v1 % 3, t2.v2 % 3)
     decoding.getOrElse(m15, sys.error(s"Undecodable matrix: $m15."))
   }
-
 }
 
 private[mobilityid] object LookupTables {

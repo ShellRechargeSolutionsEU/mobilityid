@@ -20,9 +20,9 @@ class EmaId private (
 
   import com.thenewmotion.mobilityid.EmaId._
 
-  require(countryCode.size == 2 && countryCode.forall(_.isLetter))
-  require(providerId.size == 3 && providerId.forall(_.isLetterOrDigit))
-  require(instanceValue.size == 9 && instanceValue.forall(_.isLetterOrDigit))
+  require(countryCode.size == 2 && countryCode.forall(_.isAsciiUpper))
+  require(providerId.size == 3 && providerId.forall(_.isAsciiUpperOrDigit))
+  require(instanceValue.size == 9 && instanceValue.forall(_.isAsciiUpperOrDigit))
 
   override def toString = normalizedId
 
@@ -64,8 +64,10 @@ object EmaId {
    * @return The EmaId object
    * @throws IllegalArgumentException If any of the fields are of the wrong length or contain illegal characters
    */
-  def apply(countryCode: String, providerId: String, instanceValue: String): EmaId = {
-    // TODO: move this rearrangement to check digit calculator
+  def apply(countryCode: String, providerId: String, instanceValue: String): EmaId =
+    applyToUpperCase(countryCode.toUpperCase, providerId.toUpperCase, instanceValue.toUpperCase)
+
+  private[this] def applyToUpperCase(countryCode: String, providerId: String, instanceValue: String) = {
     val checkDigit = CheckDigit(countryCode + providerId + instanceValue)
     new EmaId(countryCode, providerId, instanceValue, checkDigit)
   }
@@ -80,7 +82,10 @@ object EmaId {
    * @throws IllegalArgumentException If any of the fields are of the wrong length or contain illegal characters or if
    *                                  the given check digit is incorrect
    */
-  def apply(countryCode: String, providerId: String, instanceValue: String, checkDigit: Character): EmaId = {
+  def apply(countryCode: String, providerId: String, instanceValue: String, checkDigit: Char): EmaId =
+    applyToUpperCase(countryCode.toUpperCase, providerId.toUpperCase, instanceValue.toUpperCase, Character.toUpperCase(checkDigit))
+
+  private[this] def applyToUpperCase(countryCode: String, providerId: String, instanceValue: String, checkDigit: Char): EmaId = {
     val computedCheckDigit = CheckDigit(countryCode + providerId + instanceValue)
     require(computedCheckDigit == checkDigit)
 
@@ -122,5 +127,4 @@ object EmaId {
 
   def unapply(i: EmaId): Option[(String, String, String, Character)] =
     Some(i.countryCode, i.providerId, i.instanceValue, i.checkDigit)
-
 }
