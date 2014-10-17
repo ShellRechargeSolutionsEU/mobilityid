@@ -7,7 +7,4 @@ jdk:
   - oraclejdk7
 script: sbt clean test 
 notifications:
-  email:
-    recipients:
-    - konstantin.spitsyn@gmail.com
-    - plokhotnyuk@gmail.com
+  slack: thenewmotion:FzdJDwvOndN2WjkQwmAAqzY1
