@@ -7,4 +7,4 @@ jdk:
   - oraclejdk7
 script: sbt clean test 
 notifications:
-  slack: thenewmotion:FzdJDwvOndN2WjkQwmAAqzY1
+  slack: thenewmotion:AXSluctig1mmZbeKRDeeY41s

@@ -1,4 +1,4 @@
-## EVCO ID Utils [![Build Status](https://travis-ci.org/thenewmotion/evcoid.png?branch=master)](https://travis-ci.org/thenewmotion/evcoid)
+## Mobility ID Utils [![Build Status](https://travis-ci.org/thenewmotion/mobilityid.png?branch=master)](https://travis-ci.org/thenewmotion/mobilityid)
 
 ### About the library ###
 
