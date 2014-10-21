@@ -3,7 +3,7 @@ scala:
   - 2.10.4
   - 2.11.2
 jdk:
-  - openjdk7
+  - oraclejdk8
   - oraclejdk7
 script: sbt clean test 
 notifications:
