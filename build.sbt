@@ -10,10 +10,6 @@ ReleaseKeys.crossBuild := true
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
-resolvers ++= Seq(
-  "TNM General" at "http://nexus.thenewmotion.com/content/groups/general/"
-)
-
 publishTo := {
   val nexus = "http://nexus.thenewmotion.com/content/repositories/"
   if (isSnapshot.value) Some("snapshots" at nexus + "snapshots-public")
