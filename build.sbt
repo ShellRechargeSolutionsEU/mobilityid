@@ -11,8 +11,7 @@ ReleaseKeys.crossBuild := true
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
 resolvers ++= Seq(
-  "Nexus" at "http://nexus.thenewmotion.com/content/groups/public/",
-  "Nexus Snapshots" at "http://nexus.thenewmotion.com/content/repositories/snapshots"
+  "TNM General" at "http://nexus.thenewmotion.com/content/groups/general/"
 )
 
 publishTo := {
