@@ -21,7 +21,7 @@ credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 releaseSettings
 
 libraryDependencies ++= Seq(
-  "org.specs2" %% "specs2" % "2.4.15" % "test"
+  "org.specs2" %% "specs2-junit" % "2.4.15" % "test"
 )
 
 licenses += ("Apache License, Version 2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
