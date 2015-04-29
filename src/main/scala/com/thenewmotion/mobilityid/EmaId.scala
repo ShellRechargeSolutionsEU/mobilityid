@@ -12,11 +12,12 @@ package com.thenewmotion.mobilityid
  * @param checkDigit A check digit
  */
 // the constructor is private so we don't have a user-supplied check digit to check in it
-class EmaId private (
-  val countryCode: String,
-  val providerId: String,
-  val instanceValue: String,
-  val checkDigit: Character) {
+@SerialVersionUID(0)
+case class EmaId private (
+  countryCode: String,
+  providerId: String,
+  instanceValue: String,
+  checkDigit: Character) {
 
   import com.thenewmotion.mobilityid.EmaId._
 
@@ -24,17 +25,10 @@ class EmaId private (
   require(providerId.size == 3 && providerId.forall(_.isAsciiUpperOrDigit))
   require(instanceValue.size == 9 && instanceValue.forall(_.isAsciiUpperOrDigit))
 
+  private val normalizedId =
+    List(countryCode, providerId, instanceValue, checkDigit).mkString(separator)
+
   override def toString = normalizedId
-
-  override def equals(o: Any) = o match {
-    case otherId: EmaId =>
-      otherId.countryCode == countryCode && otherId.providerId == providerId && otherId.instanceValue == instanceValue
-    case _ => false
-  }
-
-  override def hashCode = toString.hashCode
-
-  private val normalizedId = List(countryCode, providerId, instanceValue, checkDigit).mkString(separator)
 
   def toCompactString = toCompactStringWithoutCheckDigit + checkDigit
   def toCompactStringWithoutCheckDigit = countryCode + providerId + instanceValue
@@ -124,7 +118,4 @@ object EmaId {
     require(dinCheck.size == 1)
     "00" + dinInstance + dinCheck
   }
-
-  def unapply(i: EmaId): Option[(String, String, String, Character)] =
-    Some(i.countryCode, i.providerId, i.instanceValue, i.checkDigit)
 }

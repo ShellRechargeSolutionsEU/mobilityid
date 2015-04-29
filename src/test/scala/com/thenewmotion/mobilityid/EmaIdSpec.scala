@@ -1,8 +1,8 @@
 package com.thenewmotion.mobilityid
 
-import org.specs2.mutable.SpecificationWithJUnit
+import org.specs2.mutable.Specification
 
-class EmaIdSpec extends SpecificationWithJUnit {
+class EmaIdSpec extends Specification {
 
   "EmaId" should {
     "render an EMAID in the normalized form with dashes and check digit" in {
@@ -34,7 +34,7 @@ class EmaIdSpec extends SpecificationWithJUnit {
       List(EmaId("NL-TNM-000122045-X"), // wrong check digit
            EmaId("NLTNM076"), // wrong length
            EmaId("X-aargh-131331234"), // wrong length of fields
-           EmaId(" \0t24\u2396a\t"), // whatever nonsense
+           EmaId(" \u0000t24\u2396a\t"), // whatever nonsense
            EmaId("NL-T|M-000122045-U") // right lengths but illegal char
       ) mustEqual List.fill(5)(None)
     }

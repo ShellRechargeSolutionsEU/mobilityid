@@ -1,8 +1,8 @@
 package com.thenewmotion.mobilityid
 
-import org.specs2.mutable.SpecificationWithJUnit
+import org.specs2.mutable.Specification
 
-class CheckDigitSpec extends SpecificationWithJUnit {
+class CheckDigitSpec extends Specification {
 
   "CheckDigitCalculator" should {
     "calculate check digits" in {
