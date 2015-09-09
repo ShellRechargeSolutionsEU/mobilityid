@@ -8,7 +8,9 @@ private[mobilityid] object CheckDigit {
   def apply(code: String): Char = applyToUpperCaseString(code.toUpperCase)
 
   private[this] def applyToUpperCaseString(code: String): Char = {
-    require(code.size == p1s.size && code.size == p2s.size && code.forall(_.isAsciiUpperOrDigit))
+    require(code.length == p1s.length, s"Code must have a length of ${p1s.length}")
+    require(code.length == p2s.length, s"Code must have a length of ${p2s.length}")
+    require(code.forall(_.isAsciiUpperOrDigit), "Code must consist of uppercase ASCII letters and digits")
 
     @annotation.tailrec
     def sumEq(ps: Array[Matrix], f: Matrix => Vec, v: Vec = Vec(0, 0), i: Int = 0): Vec = {

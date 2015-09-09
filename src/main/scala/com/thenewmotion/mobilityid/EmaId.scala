@@ -21,9 +21,12 @@ case class EmaId private (
 
   import com.thenewmotion.mobilityid.EmaId._
 
-  require(countryCode.size == 2 && countryCode.forall(_.isAsciiUpper))
-  require(providerId.size == 3 && providerId.forall(_.isAsciiUpperOrDigit))
-  require(instanceValue.size == 9 && instanceValue.forall(_.isAsciiUpperOrDigit))
+  require(countryCode.length == 2 && countryCode.forall(_.isAsciiUpper),
+    "Country Code must have a length of 2 and be ASCII letters")
+  require(providerId.length == 3 && providerId.forall(_.isAsciiUpperOrDigit),
+    "Provider Id must have a length of 3 and be ASCII letters or digits")
+  require(instanceValue.length == 9 && instanceValue.forall(_.isAsciiUpperOrDigit),
+    "Instance Value must have a length of 9 and be ASCII letters or digits")
 
   private val normalizedId =
     List(countryCode, providerId, instanceValue, checkDigit).mkString(separator)
@@ -98,24 +101,24 @@ object EmaId {
     val matchWithRegex: PartialFunction[String, EmaId] = {
       case RegexForEvcoId(country, prov, instance, check) =>
         if (check != null) {
-          require(check.size == 1)
+          require(check.length == 1, "check length must equal 1")
           apply(country, prov, instance, check.head)
         } else
           apply(country, prov, instance)
       case RegexForDinId(country, prov, instance, check) if check != null =>
-        apply(country, prov, dinInstanceToIsoInstance(instance, check))
+        apply(country, prov, dinInstanceToIsoInstance(instance, check.toCharArray.head))
     }
 
     try {
       matchWithRegex.lift(emaId)
     } catch {
-      case _: IllegalArgumentException => None
+      case e: IllegalArgumentException =>
+        None
     }
   }
 
-  private def dinInstanceToIsoInstance(dinInstance: String, dinCheck: String): String = {
-    require(dinInstance.size == 6)
-    require(dinCheck.size == 1)
+  private def dinInstanceToIsoInstance(dinInstance: String, dinCheck: Char): String = {
+    require(dinInstance.length == 6, "DIN instance must be 6 chars")
     "00" + dinInstance + dinCheck
   }
 }
