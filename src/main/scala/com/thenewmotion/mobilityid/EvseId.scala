@@ -18,22 +18,29 @@ trait EvseId {
 
 private case class Error(priority: Int, desc: String)
 
-private trait EvseIdFormat {
+trait EvseIdFormat[T <: EvseId] {
   def Description: String
-  def CountryCode: Regex
-  def OperatorCode: Regex
-  def PowerOutletId: Regex
-  def EvseId: Regex
-  def create(countryCode: String, operatorId: String, powerOutletId: String): EvseId
+  val CountryCode: Regex
+  val OperatorCode: Regex
+  val PowerOutletId: Regex
+  val EvseIdRegex: Regex
+  
+  def apply(countryCode: String, operatorId: String, powerOutletId: String): T
+  def apply(evseId: String): Option[T] = {
+    evseId match {
+      case EvseIdRegex(c, o, po) => Some(apply(c, o, po))
+      case _ => None
+    }
+  }
 
   // _Could_ be done much nicer with scalaz disjunction, but I don't want to increase the size of the lib :)
-  def isValid(countryCode: String, operatorId: String, powerOutletId: String): Either[Error, EvseId] = {
+  private[mobilityid] def isValid(countryCode: String, operatorId: String, powerOutletId: String): Either[Error, EvseId] = {
     CountryCode.unapplySeq(countryCode) match {
       case Some(_) =>
         OperatorCode.unapplySeq(operatorId) match {
           case Some(_) =>
             PowerOutletId.unapplySeq(powerOutletId) match {
-              case Some(_) => Right(create(countryCode, operatorId, powerOutletId))
+              case Some(_) => Right(apply(countryCode, operatorId, powerOutletId))
               case _ => Left(Error(3, s"Invalid powerOutletId for $Description format"))
             }
           case _ => Left(Error(2, s"Invalid operatorId for $Description format"))
@@ -58,8 +65,8 @@ object EvseId {
 
   def apply(evseId: String): Option[EvseId] = {
     evseId match {
-      case EvseIdIso.EvseId(c, o, po) => Some(EvseIdIso.create(c, o, po))
-      case EvseIdDin.EvseId(c, o, po) => Some(EvseIdDin.create(c, o, po))
+      case EvseIdIso.EvseIdRegex(c, o, po) => Some(EvseIdIso.apply(c, o, po))
+      case EvseIdDin.EvseIdRegex(c, o, po) => Some(EvseIdDin.apply(c, o, po))
       case _ => None
     }
   }
@@ -71,37 +78,43 @@ object EvseId {
   def unapply(x: EvseId): Option[String] = Some(x.toString)
 }
 
-private object EvseIdDin extends EvseIdFormat {
+object EvseIdDin extends EvseIdFormat[EvseIdDin] {
   val Description = "DIN"
   val CountryCode = """\+?([0-9]{1,3})""".r
   val OperatorCode = """([0-9]{3,6})""".r
   val PowerOutletId = """([0-9\*]{1,32})""".r
-  val EvseId = s"""$CountryCode\\*$OperatorCode\\*$PowerOutletId""".r
-  def create(countryCode: String, operatorId: String, powerOutletId: String) =
-    new EvseIdDin(countryCode, operatorId, powerOutletId)
+  val EvseIdRegex = s"""$CountryCode\\*$OperatorCode\\*$PowerOutletId""".r
+  def apply(countryCode: String, operatorId: String, powerOutletId: String): EvseIdDin =
+    new EvseIdDinImpl(countryCode, operatorId, powerOutletId)
 }
 
-case class EvseIdDin private(
+trait EvseIdDin extends EvseId
+
+private case class EvseIdDinImpl(
   countryCode: String,
   operatorId: String,
   powerOutletId: String
-) extends EvseId
+) extends EvseIdDin
 
-private object EvseIdIso extends EvseIdFormat {
+object EvseIdIso extends EvseIdFormat[EvseIdIso] {
   val Description = "ISO"
   val CountryCode = """([A-Za-z]{2})""".r
   val OperatorCode = """([A-Za-z0-9]{3})""".r
   val PowerOutletId = """(E[A-Za-z0-9\*]{1,30})""".r
-  val EvseId = s"""$CountryCode\\*?$OperatorCode\\*?$PowerOutletId""".r
-  def create(countryCode: String, operatorId: String, powerOutletId: String) =
-    new EvseIdIso(countryCode.toUpperCase, operatorId.toUpperCase, powerOutletId.toUpperCase)
+  val EvseIdRegex = s"""$CountryCode\\*?$OperatorCode\\*?$PowerOutletId""".r
+  def apply(countryCode: String, operatorId: String, powerOutletId: String): EvseIdIso =
+    new EvseIdIsoImpl(countryCode.toUpperCase, operatorId.toUpperCase, powerOutletId.toUpperCase)
 }
 
-case class EvseIdIso private(
+trait EvseIdIso extends EvseId {
+  def toCompactString: String
+}
+
+private case class EvseIdIsoImpl (
   countryCode: String,
   operatorId: String,
   powerOutletId: String
-) extends EvseId {
+) extends EvseIdIso {
   def toCompactString =
       countryCode + operatorId + powerOutletId.replace(separator, "")
 }

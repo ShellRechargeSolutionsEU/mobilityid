@@ -27,6 +27,16 @@ class EvseIdSpec extends Specification {
         }
       }
 
+      "Allow to construct an EvseIdIso directly" in {
+        EvseIdIso("DE*AB7*E840*6487") match {
+          case Some(e: EvseId) =>
+            e.countryCode mustEqual "DE"
+            e.operatorId mustEqual "AB7"
+            e.powerOutletId mustEqual "E840*6487"
+          case _ => ko
+        }
+      }
+
       "Accept a minimum length ISO EvseId String" in {
         EvseId("DEAB7E1") must beSome
       }
@@ -42,6 +52,10 @@ class EvseIdSpec extends Specification {
       "Reject an ISO EvseId String with incorrect powerOutletId (must begin with E)" in {
         EvseId("NL*TNM*840*6487") must beNone
       }
+
+      "Reject to construct an EvseIdIso directly from valid DIN String" in {
+        EvseIdIso("+49*810*000*438") must beNone
+      }
     }
 
     "Parse DIN string format" should {
@@ -49,6 +63,16 @@ class EvseIdSpec extends Specification {
       "Accept a DIN EvseId String" in {
         EvseId("+49*810*000*438") match {
           case Some(e: EvseIdDin) =>
+            e.countryCode mustEqual "49"
+            e.operatorId mustEqual "810"
+            e.powerOutletId mustEqual "000*438"
+          case _ => ko
+        }
+      }
+
+      "Allow to construct an EvseIdDin directly" in {
+        EvseIdDin("+49*810*000*438") match {
+          case Some(e: EvseId) =>
             e.countryCode mustEqual "49"
             e.operatorId mustEqual "810"
             e.powerOutletId mustEqual "000*438"
@@ -75,12 +99,16 @@ class EvseIdSpec extends Specification {
       "Reject a DIN EvseId String with incorrect powerOutletId" in {
         EvseId("+49*645*E840*6487") must beNone
       }
+
+      "Reject to construct an EvseIdDin directly from valid ISO String" in {
+        EvseIdDin("DE*AB7*E840*6487") must beNone
+      }
     }
 
     "Parse individual fields" should {
       "Accept valid combination of ISO parameters" in {
         val evseId = EvseId("NL", "TNM", "E840*6487")
-        evseId must haveClass[EvseIdIso]
+        evseId must beAnInstanceOf[EvseIdIso]
         evseId.countryCode mustEqual "NL"
         evseId.operatorId mustEqual "TNM"
         evseId.powerOutletId mustEqual "E840*6487"
@@ -88,7 +116,7 @@ class EvseIdSpec extends Specification {
 
       "Accept valid combination of DIN parameters" in {
         val evseId = EvseId("+31", "745", "840*6487")
-        evseId must haveClass[EvseIdDin]
+        evseId must beAnInstanceOf[EvseIdDin]
         evseId.countryCode mustEqual "+31"
         evseId.operatorId mustEqual "745"
         evseId.powerOutletId mustEqual "840*6487"
