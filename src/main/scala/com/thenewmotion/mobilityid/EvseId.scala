@@ -34,7 +34,7 @@ trait EvseIdFormat[T <: EvseId] {
   }
 
   // _Could_ be done much nicer with scalaz disjunction, but I don't want to increase the size of the lib :)
-  private[mobilityid] def isValid(countryCode: String, operatorId: String, powerOutletId: String): Either[Error, EvseId] = {
+  private[mobilityid] def validate(countryCode: String, operatorId: String, powerOutletId: String): Either[Error, EvseId] = {
     CountryCode.unapplySeq(countryCode) match {
       case Some(_) =>
         OperatorCode.unapplySeq(operatorId) match {
@@ -52,8 +52,8 @@ trait EvseIdFormat[T <: EvseId] {
 
 object EvseId {
   def apply(countryCode: String, operatorId: String, powerOutletId: String): EvseId = {
-    (EvseIdIso.isValid(countryCode, operatorId, powerOutletId),
-      EvseIdDin.isValid(countryCode, operatorId, powerOutletId)) match {
+    (EvseIdIso.validate(countryCode, operatorId, powerOutletId),
+      EvseIdDin.validate(countryCode, operatorId, powerOutletId)) match {
       case (Right(evseId), _) => evseId
       case (_, Right(evseId)) => evseId
       case (Left(error1), Left(error2)) if error1.priority >= error2.priority =>
@@ -84,8 +84,11 @@ object EvseIdDin extends EvseIdFormat[EvseIdDin] {
   val OperatorCode = """([0-9]{3,6})""".r
   val PowerOutletId = """([0-9\*]{1,32})""".r
   val EvseIdRegex = s"""$CountryCode\\*$OperatorCode\\*$PowerOutletId""".r
-  def apply(countryCode: String, operatorId: String, powerOutletId: String): EvseIdDin =
-    new EvseIdDinImpl(countryCode, operatorId, powerOutletId)
+
+  def apply(countryCode: String, operatorId: String, powerOutletId: String): EvseIdDin = {
+    val ccWithPlus = if (countryCode.startsWith("+")) countryCode else s"+$countryCode"
+    new EvseIdDinImpl(ccWithPlus, operatorId, powerOutletId)
+  }
 }
 
 trait EvseIdDin extends EvseId

@@ -63,7 +63,7 @@ class EvseIdSpec extends Specification {
       "Accept a DIN EvseId String" in {
         EvseId("+49*810*000*438") match {
           case Some(e: EvseIdDin) =>
-            e.countryCode mustEqual "49"
+            e.countryCode mustEqual "+49"
             e.operatorId mustEqual "810"
             e.powerOutletId mustEqual "000*438"
           case _ => ko
@@ -73,7 +73,7 @@ class EvseIdSpec extends Specification {
       "Allow to construct an EvseIdDin directly" in {
         EvseIdDin("+49*810*000*438") match {
           case Some(e: EvseId) =>
-            e.countryCode mustEqual "49"
+            e.countryCode mustEqual "+49"
             e.operatorId mustEqual "810"
             e.powerOutletId mustEqual "000*438"
           case _ => ko
@@ -102,6 +102,10 @@ class EvseIdSpec extends Specification {
 
       "Reject to construct an EvseIdDin directly from valid ISO String" in {
         EvseIdDin("DE*AB7*E840*6487") must beNone
+      }
+
+      "Accept country codes with and without plus sign" in {
+        EvseId("+49*810*000*438") mustEqual EvseId("49*810*000*438")
       }
     }
 
@@ -134,6 +138,10 @@ class EvseIdSpec extends Specification {
         EvseId("NL", "TNMN", "000722345") must throwA[IllegalArgumentException]
         EvseId("NL", "T|M", "000122045") must throwA[IllegalArgumentException]
       }
+
+      "Accept country codes with and without plus sign" in {
+        EvseId("+31", "745", "840*6487") mustEqual EvseId("31", "745", "840*6487")
+      }
     }
 
     "Render" should {
@@ -150,6 +158,7 @@ class EvseIdSpec extends Specification {
 
       "Render an EvseId in DIN format when created in DIN Format" in {
         EvseId("+31", "745", "840*6487").toString mustEqual "+31*745*840*6487"
+        EvseId("+31*745*840*6487").get.toString mustEqual "+31*745*840*6487"
       }
     }
 
