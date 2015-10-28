@@ -118,12 +118,32 @@ class EvseIdSpec extends Specification {
         evseId.powerOutletId mustEqual "E840*6487"
       }
 
+      "Accept valid combination of ISO parameters when creating EvseIdIso directly" in {
+        val evseId = EvseIdIso("NL", "TNM", "E840*6487")
+        evseId.countryCode mustEqual "NL"
+        evseId.operatorId mustEqual "TNM"
+        evseId.powerOutletId mustEqual "E840*6487"
+      }
+
       "Accept valid combination of DIN parameters" in {
         val evseId = EvseId("+31", "745", "840*6487")
         evseId must beAnInstanceOf[EvseIdDin]
         evseId.countryCode mustEqual "+31"
         evseId.operatorId mustEqual "745"
         evseId.powerOutletId mustEqual "840*6487"
+      }
+
+      "Accept valid combination of DIN parameters when creating EvseIdDin directly" in {
+        val evseId = EvseIdDin("+31", "745", "840*6487")
+        evseId.countryCode mustEqual "+31"
+        evseId.operatorId mustEqual "745"
+        evseId.powerOutletId mustEqual "840*6487"
+      }
+
+      "Reject wrong formats when creating EvseIdDin or EvseIdIso" in {
+        EvseIdIso("+31", "745", "840*6487") must throwA[IllegalArgumentException]
+        EvseIdDin("NL", "TNM", "E840*6487") must throwA[IllegalArgumentException]
+        EvseIdIso("NL", "TNM", "840*6487") must throwA[IllegalArgumentException]
       }
 
       "Reject mixed ISO/DIN formats" in {
