@@ -116,8 +116,10 @@ object EvseIdIso extends EvseIdFormat[EvseIdIso] {
   val PowerOutletId = """(E[A-Za-z0-9\*]{1,30})""".r
   val EvseIdRegex = s"""$CountryCode\\*?$OperatorCode\\*?$PowerOutletId""".r
 
-  private[mobilityid] override def create(countryCode: String, operatorId: String, powerOutletId: String): EvseIdIso =
-    EvseIdIsoImpl(countryCode, operatorId, powerOutletId)
+  private[mobilityid] override def create(countryCode: String, operatorId: String, powerOutletId: String): EvseIdIso = {
+    val pId = PartyId(countryCode, operatorId)
+    EvseIdIsoImpl(pId.countryCode, pId.id, powerOutletId)
+  }
 }
 
 trait EvseIdIso extends EvseId {
