@@ -4,8 +4,8 @@ import scala.util.matching.Regex
 
 @SerialVersionUID(0)
 trait EvseId {
-  val countryCode: String
-  val operatorId: String
+  val countryCode: CountryId
+  val operatorId: OperatorId
   val powerOutletId: String
 
   protected val separator = "*"
@@ -20,11 +20,11 @@ private case class Error(priority: Int, desc: String)
 
 trait EvseIdFormat[T <: EvseId] {
   def Description: String
-  val CountryCode: Regex
+  val CountryCodeRegex: Regex
   val OperatorCode: Regex
   val PowerOutletId: Regex
   val EvseIdRegex: Regex
-  
+
   def apply(countryCode: String, operatorId: String, powerOutletId: String): T =
     validateAndCreate(countryCode.toUpperCase, operatorId.toUpperCase, powerOutletId.toUpperCase)
 
@@ -39,7 +39,7 @@ trait EvseIdFormat[T <: EvseId] {
 
   // _Could_ be done much nicer with scalaz disjunction, but I don't want to increase the size of the lib :)
   private[mobilityid] def validate(countryCode: String, operatorId: String, powerOutletId: String): Either[Error, T] = {
-    CountryCode.unapplySeq(countryCode) match {
+    CountryCodeRegex.unapplySeq(countryCode) match {
       case Some(_) =>
         OperatorCode.unapplySeq(operatorId) match {
           case Some(_) =>
@@ -90,34 +90,35 @@ object EvseId {
 
 object EvseIdDin extends EvseIdFormat[EvseIdDin] {
   val Description = "DIN"
-  val CountryCode = """\+?([0-9]{1,3})""".r
+  val CountryCodeRegex = """\+?([0-9]{1,3})""".r
   val OperatorCode = """([0-9]{3,6})""".r
   val PowerOutletId = """([0-9\*]{1,32})""".r
-  val EvseIdRegex = s"""$CountryCode\\*$OperatorCode\\*$PowerOutletId""".r
+  val EvseIdRegex = s"""$CountryCodeRegex\\*$OperatorCode\\*$PowerOutletId""".r
 
-  private[mobilityid] override def create(countryCode: String, operatorId: String, powerOutletId: String): EvseIdDin = {
-    val ccWithPlus = if (countryCode.startsWith("+")) countryCode else s"+$countryCode"
-    EvseIdDinImpl(ccWithPlus, operatorId, powerOutletId)
+  private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdDin = {
+    val ccWithPlus = if (cc.startsWith("+")) cc else s"+$cc"
+    EvseIdDinImpl(DinCountryCode(ccWithPlus), OperatorId(operatorId), powerOutletId)
   }
 }
 
 trait EvseIdDin extends EvseId
 
 private case class EvseIdDinImpl(
-  countryCode: String,
-  operatorId: String,
+  countryCode: DinCountryCode,
+  operatorId: OperatorId,
   powerOutletId: String
 ) extends EvseIdDin
 
 object EvseIdIso extends EvseIdFormat[EvseIdIso] {
   val Description = "ISO"
-  val CountryCode = """([A-Za-z]{2})""".r
+  val CountryCodeRegex = """([A-Za-z]{2})""".r
   val OperatorCode = """([A-Za-z0-9]{3})""".r
   val PowerOutletId = """(E[A-Za-z0-9\*]{1,30})""".r
-  val EvseIdRegex = s"""$CountryCode\\*?$OperatorCode\\*?$PowerOutletId""".r
+  val EvseIdRegex = s"""$CountryCodeRegex\\*?$OperatorCode\\*?$PowerOutletId""".r
 
-  private[mobilityid] override def create(countryCode: String, operatorId: String, powerOutletId: String): EvseIdIso =
-    EvseIdIsoImpl(countryCode, operatorId, powerOutletId)
+  private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdIso = {
+    EvseIdIsoImpl(CountryCode(cc), OperatorId(operatorId), powerOutletId)
+  }
 }
 
 trait EvseIdIso extends EvseId {
@@ -125,11 +126,11 @@ trait EvseIdIso extends EvseId {
 }
 
 private case class EvseIdIsoImpl (
-  countryCode: String,
-  operatorId: String,
+  countryCode: CountryCode,
+  operatorId: OperatorId,
   powerOutletId: String
 ) extends EvseIdIso {
   def toCompactString =
-      countryCode + operatorId + powerOutletId.replace(separator, "")
+      countryCode.toString + operatorId.toString + powerOutletId.replace(separator, "")
 }
 

@@ -45,7 +45,6 @@ class EmaIdSpec extends Specification {
     }
 
     "handle german DIN IDs correclty" in {
-      println(EmaId("DE-TNM-002965-8").get)
       EmaId("DE-TNM-002965-8") mustEqual Some(EmaId("DE", "TNM", "000029658", 'Q'))
     }
 
@@ -67,7 +66,7 @@ class EmaIdSpec extends Specification {
 
     "be unapplicable" in {
       EmaId("NL", "TNM","000122045") match {
-        case EmaId(c, p, i, ch) => (c, p, i, ch) mustEqual ("NL", "TNM", "000122045", 'U')
+        case EmaId(c, p, i, ch) => (c, p, i, ch) mustEqual (CountryCode("NL"), ProviderId("TNM"), "000122045", 'U')
       }
     }
 

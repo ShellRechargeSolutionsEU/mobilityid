@@ -14,17 +14,13 @@ package com.thenewmotion.mobilityid
 // the constructor is private so we don't have a user-supplied check digit to check in it
 @SerialVersionUID(0)
 case class EmaId private (
-  countryCode: String,
-  providerId: String,
+  countryCode: CountryCode,
+  providerId: ProviderId,
   instanceValue: String,
   checkDigit: Character) {
 
   import com.thenewmotion.mobilityid.EmaId._
 
-  require(countryCode.length == 2 && countryCode.forall(_.isAsciiUpper),
-    "Country Code must have a length of 2 and be ASCII letters")
-  require(providerId.length == 3 && providerId.forall(_.isAsciiUpperOrDigit),
-    "Provider Id must have a length of 3 and be ASCII letters or digits")
   require(instanceValue.length == 9 && instanceValue.forall(_.isAsciiUpperOrDigit),
     "Instance Value must have a length of 9 and be ASCII letters or digits")
 
@@ -34,7 +30,7 @@ case class EmaId private (
   override def toString = normalizedId
 
   def toCompactString = toCompactStringWithoutCheckDigit + checkDigit
-  def toCompactStringWithoutCheckDigit = countryCode + providerId + instanceValue
+  def toCompactStringWithoutCheckDigit = countryCode.toString + providerId.toString + instanceValue
 
   def toDinString =
     if (instanceValue startsWith "00") {
@@ -61,12 +57,13 @@ object EmaId {
    * @return The EmaId object
    * @throws IllegalArgumentException If any of the fields are of the wrong length or contain illegal characters
    */
-  def apply(countryCode: String, providerId: String, instanceValue: String): EmaId =
-    applyToUpperCase(countryCode.toUpperCase, providerId.toUpperCase, instanceValue.toUpperCase)
+  def apply(countryCode: String, providerId: String, instanceValue: String): EmaId = {
+    applyToUpperCase(countryCode, providerId, instanceValue.toUpperCase)
+  }
 
-  private[this] def applyToUpperCase(countryCode: String, providerId: String, instanceValue: String) = {
-    val checkDigit = CheckDigit(countryCode + providerId + instanceValue)
-    new EmaId(countryCode, providerId, instanceValue, checkDigit)
+  private[this] def applyToUpperCase(cc: String, providerId: String, instanceValue: String) = {
+    val checkDigit = CheckDigit(cc + providerId + instanceValue)
+    new EmaId(CountryCode(cc), ProviderId(providerId), instanceValue, checkDigit)
   }
 
   /**
@@ -79,14 +76,15 @@ object EmaId {
    * @throws IllegalArgumentException If any of the fields are of the wrong length or contain illegal characters or if
    *                                  the given check digit is incorrect
    */
-  def apply(countryCode: String, providerId: String, instanceValue: String, checkDigit: Char): EmaId =
-    applyToUpperCase(countryCode.toUpperCase, providerId.toUpperCase, instanceValue.toUpperCase, Character.toUpperCase(checkDigit))
+  def apply(countryCode: String, providerId: String, instanceValue: String, checkDigit: Char): EmaId = {
+    applyToUpperCase(countryCode, providerId, instanceValue.toUpperCase, Character.toUpperCase(checkDigit))
+  }
 
-  private[this] def applyToUpperCase(countryCode: String, providerId: String, instanceValue: String, checkDigit: Char): EmaId = {
-    val computedCheckDigit = CheckDigit(countryCode + providerId + instanceValue)
+  private[this] def applyToUpperCase(cc: String, providerId: String, instanceValue: String, checkDigit: Char): EmaId = {
+    val computedCheckDigit = CheckDigit(cc + providerId + instanceValue)
     require(computedCheckDigit == checkDigit)
 
-    new EmaId(countryCode, providerId, instanceValue, checkDigit)
+    new EmaId(CountryCode(cc), ProviderId(providerId), instanceValue, checkDigit)
   }
 
   /**
