@@ -44,6 +44,11 @@ class EmaIdSpec extends Specification {
       EmaId("NL-TNM-123456") must beNone
     }
 
+    "handle german DIN IDs correclty" in {
+      println(EmaId("DE-TNM-002965-8").get)
+      EmaId("DE-TNM-002965-8") mustEqual Some(EmaId("DE", "TNM", "000029658", 'Q'))
+    }
+
     "render an EMAID as a compact string without dashes" in {
       EmaId("NL", "TNM", "000722345").toCompactString mustEqual "NLTNM000722345X"
     }
