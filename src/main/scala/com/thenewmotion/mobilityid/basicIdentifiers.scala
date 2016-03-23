@@ -4,32 +4,30 @@ import java.util.Locale
 
 
 
-class ProviderId private (private val id: String ) extends AnyVal {
+abstract case class ProviderId private (private val id: String ) {
   override def toString = id
 }
 
 object ProviderId {
 
-
   def apply(id: String): ProviderId = {
     require(id.length == 3 && id.forall(_.isAsciiLetterOrDigit),
       "ProviderId must have a length of 3 and be ASCII letters or digits")
-    new ProviderId(id.toUpperCase)
+    new ProviderId(id.toUpperCase){}
   }
 }
 
 
-class OperatorId private (private val id: String ) extends AnyVal {
+abstract case class OperatorId private (private val id: String ) {
   override def toString = id
 }
 
 object OperatorId {
 
-
   def apply(id: String): OperatorId = {
     require(id.length == 3 && id.forall(_.isAsciiLetterOrDigit),
       "OperatorId must have a length of 3 and be ASCII letters or digits")
-    new OperatorId(id.toUpperCase)
+    new OperatorId(id.toUpperCase){}
   }
 }
 
