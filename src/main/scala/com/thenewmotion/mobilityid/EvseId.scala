@@ -97,14 +97,14 @@ object EvseIdDin extends EvseIdFormat[EvseIdDin] {
 
   private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdDin = {
     val ccWithPlus = if (cc.startsWith("+")) cc else s"+$cc"
-    EvseIdDinImpl(DinCountryCode(ccWithPlus), OperatorId(operatorId), powerOutletId)
+    EvseIdDinImpl(PhoneCountryCode(ccWithPlus), OperatorId(operatorId), powerOutletId)
   }
 }
 
 trait EvseIdDin extends EvseId
 
 private case class EvseIdDinImpl(
-  countryCode: DinCountryCode,
+  countryCode: PhoneCountryCode,
   operatorId: OperatorId,
   powerOutletId: String
 ) extends EvseIdDin

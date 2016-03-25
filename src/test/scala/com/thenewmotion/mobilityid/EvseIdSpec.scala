@@ -63,7 +63,7 @@ class EvseIdSpec extends Specification {
       "Accept a DIN EvseId String" in {
         EvseId("+49*810*000*438") match {
           case Some(e: EvseIdDin) =>
-            e.countryCode mustEqual DinCountryCode("+49")
+            e.countryCode mustEqual PhoneCountryCode("+49")
             e.operatorId mustEqual OperatorId("810")
             e.powerOutletId mustEqual "000*438"
           case _ => ko
@@ -73,7 +73,7 @@ class EvseIdSpec extends Specification {
       "Allow to construct an EvseIdDin directly" in {
         EvseIdDin("+49*810*000*438") match {
           case Some(e: EvseId) =>
-            e.countryCode mustEqual DinCountryCode("+49")
+            e.countryCode mustEqual PhoneCountryCode("+49")
             e.operatorId mustEqual OperatorId("810")
             e.powerOutletId mustEqual "000*438"
           case _ => ko
@@ -128,14 +128,14 @@ class EvseIdSpec extends Specification {
       "Accept valid combination of DIN parameters" in {
         val evseId = EvseId("+31", "745", "840*6487")
         evseId must beAnInstanceOf[EvseIdDin]
-        evseId.countryCode mustEqual DinCountryCode("+31")
+        evseId.countryCode mustEqual PhoneCountryCode("+31")
         evseId.operatorId mustEqual OperatorId("745")
         evseId.powerOutletId mustEqual "840*6487"
       }
 
       "Accept valid combination of DIN parameters when creating EvseIdDin directly" in {
         val evseId = EvseIdDin("+31", "745", "840*6487")
-        evseId.countryCode mustEqual DinCountryCode("+31")
+        evseId.countryCode mustEqual PhoneCountryCode("+31")
         evseId.operatorId mustEqual OperatorId("745")
         evseId.powerOutletId mustEqual "840*6487"
       }

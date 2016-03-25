@@ -50,15 +50,15 @@ object CountryCode {
   }
 }
 
-abstract case class DinCountryCode private (private val cc: String ) extends CountryId {
+abstract case class PhoneCountryCode private (private val cc: String ) extends CountryId {
   override def toString = cc
 }
 
-object DinCountryCode {
+object PhoneCountryCode {
 
-  def apply(countryCode: String): DinCountryCode = {
+  def apply(countryCode: String): PhoneCountryCode = {
     require(countryCode.startsWith("+") && countryCode.length == 3 && countryCode.substring(1).forall(_.isAsciiDigit),
-      s"DIN Country Code must start with a '+' sign and be followed by 2 digits. (Was: $countryCode)")
-    new DinCountryCode(countryCode.toUpperCase){}
+      s"phone Country Code must start with a '+' sign and be followed by 2 digits. (Was: $countryCode)")
+    new PhoneCountryCode(countryCode.toUpperCase){}
   }
 }
