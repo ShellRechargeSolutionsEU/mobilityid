@@ -66,7 +66,9 @@ class EmaIdSpec extends Specification {
 
     "be unapplicable" in {
       EmaId("NL", "TNM","000122045") match {
-        case EmaId(c, p, i, ch) => (c, p, i, ch) mustEqual (CountryCode("NL"), ProviderId("TNM"), "000122045", 'U')
+        case EmaId(c, p, i, ch) =>
+          (c, p, i, ch) mustEqual
+            ((CountryCode("NL"), ProviderId("TNM"), "000122045", 'U'))
       }
     }
 
