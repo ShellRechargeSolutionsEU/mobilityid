@@ -8,33 +8,11 @@ class EvseIdSpec extends Specification {
 
     "Parse ISO string format" should {
       "Accept an ISO EvseId String with separators" in {
-        EvseId("DE*AB7*E840*6487") match {
-          case Some(e: EvseIdIso) =>
-            e.countryCode mustEqual CountryCode("DE")
-            e.operatorId mustEqual OperatorId("AB7")
-            e.powerOutletId mustEqual "E840*6487"
-          case _ => ko
-        }
+        EvseId("DE*AB7*E840*6487") must beSome(EvseId("DE", "AB7", "840*6487"))
       }
 
       "Accept an ISO EvseId String without separators" in {
-        EvseId("DEAB7E8406487") match {
-          case Some(e: EvseIdIso) =>
-            e.countryCode mustEqual CountryCode("DE")
-            e.operatorId mustEqual OperatorId("AB7")
-            e.powerOutletId mustEqual "E8406487"
-          case _ => ko
-        }
-      }
-
-      "Allow to construct an EvseIdIso directly" in {
-        EvseIdIso("DE*AB7*E840*6487") match {
-          case Some(e: EvseId) =>
-            e.countryCode mustEqual CountryCode("DE")
-            e.operatorId mustEqual OperatorId("AB7")
-            e.powerOutletId mustEqual "E840*6487"
-          case _ => ko
-        }
+        EvseId("DEAB7E8406487") must beSome(EvseId("DE", "AB7", "8406487"))
       }
 
       "Accept a minimum length ISO EvseId String" in {
@@ -46,7 +24,8 @@ class EvseIdSpec extends Specification {
       }
 
       "Reject an ISO EvseId String that is too long" in {
-        EvseId("DE*AB7*E1234567890ABCDEFGHIJ1234567890A") must beNone
+        val tooLongOutledId = Seq.fill(32)(7).mkString
+        EvseId(s"DE*AB7*E$tooLongOutledId") must beNone
       }
 
       "Reject an ISO EvseId String with incorrect powerOutletId (must begin with E)" in {
@@ -140,17 +119,18 @@ class EvseIdSpec extends Specification {
         evseId.powerOutletId mustEqual "840*6487"
       }
 
-      "Reject wrong formats when creating EvseIdDin or EvseIdIso" in {
+      "Reject EvseIdIso's country/operator codes when creating EvseIdDin" in {
+        EvseIdDin("NL", "TNM", "840*6487") must throwA[IllegalArgumentException]
+      }
+
+      "Reject EvseIdDin's country/operator codes when creating EvseIdIso" in {
         EvseIdIso("+31", "745", "840*6487") must throwA[IllegalArgumentException]
-        EvseIdDin("NL", "TNM", "E840*6487") must throwA[IllegalArgumentException]
-        EvseIdIso("NL", "TNM", "840*6487") must throwA[IllegalArgumentException]
       }
 
       "Reject mixed ISO/DIN formats" in {
         EvseId("+31", "ABC", "840*6487") must throwA[IllegalArgumentException]
         EvseId("+31", "745", "E840*6487") must throwA[IllegalArgumentException]
         EvseId("+31", "745", "840*6487E") must throwA[IllegalArgumentException]
-        EvseId("NL", "745", "840*6487") must throwA[IllegalArgumentException]
       }
 
       "Reject input fields with wrong lengths" in {
@@ -166,11 +146,11 @@ class EvseIdSpec extends Specification {
 
     "Render" should {
       "Render an EvseId in the ISO form with asterisks" in {
-        EvseId("NL", "TNM", "E840*6487").toString mustEqual "NL*TNM*E840*6487"
+        EvseId("NL", "TNM", "840*6487").toString mustEqual "NL*TNM*E840*6487"
       }
 
       "Render an EvseId in the Compact ISO form without asterisks" in {
-        EvseId("NL", "TNM", "E840*6487") match {
+        EvseId("NL", "TNM", "840*6487") match {
           case evseId: EvseIdIso => evseId.toCompactString mustEqual "NLTNME8406487"
           case _ => ko
         }
