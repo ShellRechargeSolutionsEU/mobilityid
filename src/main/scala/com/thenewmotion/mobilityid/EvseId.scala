@@ -116,7 +116,7 @@ object EvseIdIso extends EvseIdFormat[EvseIdIso] {
   val CountryCodeRegex = """([A-Za-z]{2})""".r
   val OperatorCode = """([A-Za-z0-9]{3})""".r
   val IdType = "E"
-  val PowerOutletId = """([A-Za-z0-9\*]{1,30})""".r
+  val PowerOutletId = """([A-Za-z0-9][A-Za-z0-9\*]{0,30})""".r
   val EvseIdRegex = s"""$CountryCodeRegex\\*?$OperatorCode\\*?$IdType$PowerOutletId""".r
 
   private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdIso = {
