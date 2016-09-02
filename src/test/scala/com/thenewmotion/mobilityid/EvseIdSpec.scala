@@ -24,7 +24,8 @@ class EvseIdSpec extends Specification {
       }
 
       "Reject an ISO EvseId String that is too long" in {
-        EvseId("DE*AB7*E1234567890ABCDEFGHIJ1234567890A") must beNone
+        val tooLongOutledId = Seq.fill(32)(7).mkString
+        EvseId(s"DE*AB7*E$tooLongOutledId") must beNone
       }
 
       "Reject an ISO EvseId String with incorrect powerOutletId (must begin with E)" in {
