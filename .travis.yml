@@ -6,5 +6,9 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 script: sbt clean test
+cache:
+  directories:
+    - $HOME/.sbt
+    - $HOME/.ivy2/cache
 notifications:
   slack: thenewmotion:AXSluctig1mmZbeKRDeeY41s
