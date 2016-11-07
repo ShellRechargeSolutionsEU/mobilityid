@@ -35,6 +35,10 @@ class EvseIdSpec extends Specification {
       "Reject to construct an EvseIdIso directly from valid DIN String" in {
         EvseIdIso("+49*810*000*438") must beNone
       }
+
+      "Reject to construct with invalid country code" in {
+        EvseIdIso("ZZ*TNM*840*64878") must beNone
+      }
     }
 
     "Parse DIN string format" should {
@@ -85,6 +89,10 @@ class EvseIdSpec extends Specification {
 
       "Accept country codes with and without plus sign" in {
         EvseId("+49*810*000*438") mustEqual EvseId("49*810*000*438")
+      }
+
+      "Reject to construct a DIN EvseId with invalid country code" in {
+        EvseIdIso("+4A*810*000*438") must beNone
       }
     }
 
