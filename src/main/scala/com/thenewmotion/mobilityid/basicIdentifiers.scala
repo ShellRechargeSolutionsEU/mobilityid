@@ -2,37 +2,31 @@ package com.thenewmotion.mobilityid
 
 import java.util.Locale
 
-abstract case class ProviderId private (private val id: String ) {
+sealed trait ProviderId {
+  def id: String
+}
+
+private case class ProviderIdImpl(id: String) extends ProviderId {
   override def toString = id
 }
 
 object ProviderId {
-  def apply(id: String): ProviderId = {
-    require(id.length == 3 && id.forall(_.isAsciiLetterOrDigit),
-      "ProviderId must have a length of 3 and be ASCII letters or digits")
-    new ProviderId(id.toUpperCase){}
-  }
-}
-
-
-abstract case class OperatorId private (private val id: String ) {
-  override def toString = id
-}
-
-object OperatorId {
   val Regex = """([A-Za-z0-9]{3})""".r
 
-  def apply(id: String): OperatorId = {
-    if (Regex.unapplySeq(id).isDefined) new OperatorId(id.toUpperCase){}
-    else throw new IllegalArgumentException(
+  def apply(id: String): ProviderId = id match {
+    case Regex(_) => ProviderIdImpl(id.toUpperCase)
+    case _ => throw new IllegalArgumentException(
       "OperatorId must have a length of 3 and be ASCII letters or digits")
-
   }
 }
 
-trait CountryId
+sealed trait CountryId {
+  def cc: String
+}
 
-abstract case class CountryCode private (private val cc: String ) extends CountryId {
+sealed trait CountryCode extends CountryId
+
+private case class CountryCodeImpl(cc: String) extends CountryCode {
   override def toString = cc
 }
 
@@ -41,26 +35,25 @@ object CountryCode {
 
   lazy val isoCountries = Locale.getISOCountries
 
-  def apply(countryCode: String): CountryCode = {
-    if (Regex.unapplySeq(countryCode).isDefined && isoCountries.contains(countryCode.toUpperCase))
-      new CountryCode(countryCode.toUpperCase){}
-    else
-      throw new IllegalArgumentException("Country Code must be valid according to ISO 3166-1 alpha-2")
+  def apply(countryCode: String): CountryCode = countryCode match {
+    case Regex(_) if isoCountries.contains(countryCode.toUpperCase) => CountryCodeImpl(countryCode.toUpperCase)
+    case _ => throw new IllegalArgumentException(
+      "Country Code must be valid according to ISO 3166-1 alpha-2")
   }
 }
 
-abstract case class PhoneCountryCode private (private val cc: String ) extends CountryId {
+sealed trait PhoneCountryCode extends CountryId
+
+private case class PhoneCountryCodeImpl(cc: String) extends PhoneCountryCode {
   override def toString = cc
 }
 
 object PhoneCountryCode {
   val Regex = """\+?([0-9]{1,3})""".r
 
-  def apply(countryCode: String): PhoneCountryCode = {
-    if (Regex.unapplySeq(countryCode).isDefined)
-      new PhoneCountryCode(countryCode.toUpperCase){}
-    else
-      throw new IllegalArgumentException(
-        s"phone Country Code must start with a '+' sign and be followed by 1-3 digits. (Was: $countryCode)")
+  def apply(countryCode: String): PhoneCountryCode = countryCode match {
+    case Regex(_) => PhoneCountryCodeImpl(countryCode.toUpperCase)
+    case _ => throw new IllegalArgumentException(
+      s"phone Country Code must start with a '+' sign and be followed by 1-3 digits. (Was: $countryCode)")
   }
 }

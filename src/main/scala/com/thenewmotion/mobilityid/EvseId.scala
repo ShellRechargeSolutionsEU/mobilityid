@@ -4,7 +4,7 @@ import scala.util.Try
 import scala.util.matching.Regex
 
 @SerialVersionUID(0)
-trait EvseId {
+sealed trait EvseId {
   def countryCode: CountryId
   def operatorId: OperatorId
   def powerOutletId: String
@@ -91,46 +91,50 @@ object EvseId {
   def unapply(x: EvseId): Option[String] = Some(x.toString)
 }
 
-sealed abstract case class EvseIdDin(
-  countryCode: PhoneCountryCode,
-  operatorId: OperatorId,
-  powerOutletId: String
-) extends EvseId
-
 object EvseIdDin extends EvseIdFormat[EvseIdDin] {
   val Description = "DIN"
   val CountryCodeRegex = PhoneCountryCode.Regex
-  val OperatorCode = """([0-9]{3,6})""".r
+  val OperatorCode = OperatorIdDin.Regex
   val PowerOutletId = """([0-9\*]{1,32})""".r
   val EvseIdRegex = s"""$CountryCodeRegex\\*$OperatorCode\\*$PowerOutletId""".r
 
   private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdDin = {
     val ccWithPlus = if (cc.startsWith("+")) cc else s"+$cc"
-    new EvseIdDin(PhoneCountryCode(ccWithPlus), OperatorId(operatorId), powerOutletId) {}
+    EvseIdDinImpl(PhoneCountryCode(ccWithPlus), OperatorIdDin(operatorId), powerOutletId)
   }
 }
 
-sealed abstract case class EvseIdIso (
-  countryCode: CountryCode,
-  operatorId: OperatorId,
-  powerOutletId: String
-) extends EvseId {
-  def toCompactString: String = toString.replace(separator, "")
+sealed trait EvseIdDin extends EvseId
 
-  override def normalizedId =
-    Seq(countryCode, operatorId, EvseIdIso.IdType + powerOutletId).mkString(separator)
-}
+private case class EvseIdDinImpl(
+  countryCode: PhoneCountryCode,
+  operatorId: OperatorIdDin,
+  powerOutletId: String
+) extends EvseIdDin
 
 object EvseIdIso extends EvseIdFormat[EvseIdIso] {
   val Description = "ISO"
   val CountryCodeRegex = CountryCode.Regex
-  val OperatorCode = OperatorId.Regex
+  val OperatorCode = OperatorIdIso.Regex
   val IdType = "E"
   val PowerOutletId = """([A-Za-z0-9][A-Za-z0-9\*]{0,30})""".r
   val EvseIdRegex = s"""$CountryCodeRegex\\*?$OperatorCode\\*?$IdType$PowerOutletId""".r
 
   private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdIso = {
-    new EvseIdIso(CountryCode(cc), OperatorId(operatorId), powerOutletId) {}
+    EvseIdIsoImpl(CountryCode(cc), OperatorIdIso(operatorId), powerOutletId)
   }
+}
+
+sealed trait EvseIdIso extends EvseId {
+  def toCompactString: String = toString.replace(separator, "")
+}
+
+private case class EvseIdIsoImpl (
+  countryCode: CountryCode,
+  operatorId: OperatorIdIso,
+  powerOutletId: String
+) extends EvseIdIso {
+  override def normalizedId =
+    Seq(countryCode, operatorId, EvseIdIso.IdType + powerOutletId).mkString(separator)
 }
 
