@@ -44,9 +44,11 @@ case class EmaId private (
 object EmaId {
   private val separator = "-"
 
-  private val RegexForEvcoId = "^([A-Za-z]{2})(?:-?)([A-Za-z0-9]{3})(?:-?)([A-Za-z0-9]{9})(?:(?:-?)([A-Za-z0-9]))?$".r
+  private val RegexForEvcoId =
+    "^([A-Za-z]{2})(?:-?)([A-Za-z0-9]{3})(?:-?)([A-Za-z0-9]{9})(?:(?:-?)([A-Za-z0-9]))?$".r
 
-  private val RegexForDinId  = "^([A-Za-z]{2})(?:-?)([A-Za-z0-9]{3})(?:-?)([A-Za-z0-9]{6})(?:(?:-?)([A-Za-z0-9]))?$".r
+  private val RegexForDinId  =
+    "^([A-Za-z]{2})(?:[*-]?)([A-Za-z0-9]{3})(?:[*-]?)([A-Za-z0-9]{6})(?:(?:[*-]?)([A-Za-z0-9]))?$".r
 
   /**
    * Create an EmaId with the given field values
@@ -82,7 +84,10 @@ object EmaId {
 
   private[this] def applyToUpperCase(cc: String, providerId: String, instanceValue: String, checkDigit: Char): EmaId = {
     val computedCheckDigit = CheckDigit(cc + providerId + instanceValue)
-    require(computedCheckDigit == checkDigit)
+    require(
+      computedCheckDigit == checkDigit,
+      s"Given check digit '$checkDigit' is not equal to computed '$computedCheckDigit'"
+    )
 
     new EmaId(CountryCode(cc), ProviderId(providerId), instanceValue, checkDigit)
   }
