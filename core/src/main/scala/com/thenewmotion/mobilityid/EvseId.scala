@@ -98,9 +98,12 @@ object EvseIdDin extends EvseIdFormat[EvseIdDin] {
   val PowerOutletId = """([0-9\*]{1,32})""".r
   val EvseIdRegex = s"""$CountryCodeRegex\\*$OperatorCode\\*$PowerOutletId""".r
 
+  def apply(cc: PhoneCountryCode, o: OperatorIdDin, powerOutletId: String): EvseIdDin =
+    EvseIdDinImpl(cc, o, powerOutletId)
+
   private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdDin = {
     val ccWithPlus = if (cc.startsWith("+")) cc else s"+$cc"
-    EvseIdDinImpl(PhoneCountryCode(ccWithPlus), OperatorIdDin(operatorId), powerOutletId)
+    apply(PhoneCountryCode(ccWithPlus), OperatorIdDin(operatorId), powerOutletId)
   }
 }
 
@@ -120,8 +123,11 @@ object EvseIdIso extends EvseIdFormat[EvseIdIso] {
   val PowerOutletId = """([A-Za-z0-9][A-Za-z0-9\*]{0,30})""".r
   val EvseIdRegex = s"""$CountryCodeRegex\\*?$OperatorCode\\*?$IdType$PowerOutletId""".r
 
+  def apply(cc: CountryCode, o: OperatorIdIso, powerOutletId: String): EvseIdIso =
+    EvseIdIsoImpl(cc, o, powerOutletId)
+
   private[mobilityid] override def create(cc: String, operatorId: String, powerOutletId: String): EvseIdIso = {
-    EvseIdIsoImpl(CountryCode(cc), OperatorIdIso(operatorId), powerOutletId)
+    apply(CountryCode(cc), OperatorIdIso(operatorId), powerOutletId)
   }
 }
 

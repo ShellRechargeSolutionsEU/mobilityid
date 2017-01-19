@@ -16,7 +16,7 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.13"
+libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.16-SNAPSHOT"
 ```
 
 ### How to use ###
@@ -191,3 +191,34 @@ It is *NOT* possible to compare two EvseId objects where one is DIN format the o
 
 This library is using the algorithm of check digit calculation for ISO 15118-1 Contract IDs described here:
 http://www.ochp.eu/id-validator/e-mobility-ids_evcoid_check-digit-calculation_explanation/
+
+### Interpolators module
+
+Can be imported with this dependency
+
+``` scala
+libraryDependencies += "com.thenewmotion" %% "mobilityid-interpolators" % "0.16-SNAPSHOT"
+```
+
+then it can be used like this:
+
+``` scala
+scala> import com.thenewmotion.mobilityid.interpolators._
+import com.thenewmotion.mobilityid.interpolators._
+
+scala> evseId"ABC"
+<console>:11: error: not a valid EvseId
+              evseId"ABC"
+                     ^
+
+scala> evseId"NL*TNM*E840*6487"
+res2: com.thenewmotion.mobilityid.EvseId = NL*TNM*E840*6487
+
+scala> emaId"ooopsie"
+<console>:11: error: not a valid EmaId
+              emaId"ooopsie"
+                    ^
+
+scala> emaId"NL-TNM-000722345-X"
+res4: com.thenewmotion.mobilityid.EmaId = NL-TNM-000722345-X
+```
