@@ -16,7 +16,7 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.16-SNAPSHOT"
+libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.16"
 ```
 
 ### How to use ###
@@ -197,7 +197,7 @@ http://www.ochp.eu/id-validator/e-mobility-ids_evcoid_check-digit-calculation_ex
 Can be imported with this dependency
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid-interpolators" % "0.16-SNAPSHOT"
+libraryDependencies += "com.thenewmotion" %% "mobilityid-interpolators" % "0.16"
 ```
 
 then it can be used like this:

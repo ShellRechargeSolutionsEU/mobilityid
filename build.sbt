@@ -26,3 +26,13 @@ val `interpolators` = project
       specs2
     )
   )
+
+val `root` =
+  project.in(file("."))
+    .enablePlugins(OssLibPlugin)
+    .aggregate(
+      `core`,
+      `interpolators`)
+    .settings(
+      publish := {}
+    )
