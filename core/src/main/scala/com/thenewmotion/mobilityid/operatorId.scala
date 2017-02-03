@@ -6,24 +6,15 @@ sealed trait OperatorId {
 
 sealed trait OperatorIdIso extends OperatorId
 
-private case class OperatorIdIsoImpl(id: String) extends OperatorIdIso {
-  override def toString = id
+private case class OperatorIdIsoImpl(partyCode: PartyCode) extends OperatorIdIso {
+  override def toString = partyCode.toString
+  def id = partyCode.id
 }
 
 object OperatorIdIso {
-  val Regex = """([A-Za-z0-9]{3})""".r
+  def isValid(id: String): Boolean = PartyCode.isValid(id)
 
-  def isValid(id: String): Boolean = id match {
-    case Regex(_) => true
-    case _ => false
-  }
-
-  def apply(id: String): OperatorIdIso =
-    if (isValid(id)) {
-      OperatorIdIsoImpl(id.toUpperCase)
-    } else throw new IllegalArgumentException(
-      "OperatorId must have a length of 3 and be ASCII letters or digits")
-
+  def apply(id: String): OperatorIdIso = OperatorIdIsoImpl(PartyCode(id))
 }
 
 sealed trait OperatorIdDin extends OperatorId
