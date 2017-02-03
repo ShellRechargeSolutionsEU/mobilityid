@@ -74,11 +74,15 @@ object PhoneCountryCode {
 sealed trait PartyId {
   def countryCode: CountryCode
   def partyCode: String
+
+  def toCompactString: String
 }
 
 private case class PartyIdImpl(countryCode: CountryCode, party: PartyCode) extends PartyId {
 
-  override def toString = countryCode.toString + partyCode.toString
+  override def toString = s"$countryCode-$partyCode"
+
+  def toCompactString = s"$countryCode$partyCode"
 
   def partyCode = party.toString
 }

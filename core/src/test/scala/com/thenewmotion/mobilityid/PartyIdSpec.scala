@@ -7,15 +7,19 @@ class PartyIdSpec extends Specification {
   "PartyId" should {
 
     "parse party-IDs with dash" in {
-      PartyId("NL-TNM") should beSome.which(_.toString == "NLTNM")
+      PartyId("NL-TNM") should beSome.which(_.toCompactString == "NLTNM")
     }
 
     "parse party-IDs with asterisk" in {
-      PartyId("NL*TNM") should beSome.which(_.toString == "NLTNM")
+      PartyId("NL*TNM") should beSome.which(_.toCompactString == "NLTNM")
     }
 
     "parse party-IDs without dash or asterisk" in {
-      PartyId("NLTNM") should beSome.which(_.toString == "NLTNM")
+      PartyId("NLTNM") should beSome.which(_.toCompactString == "NLTNM")
+    }
+
+    "render to String with a dash" in {
+      PartyId("NL*TNM") should beSome.which(_.toString == "NL-TNM")
     }
 
     "not parse various nonsense input strings" in {

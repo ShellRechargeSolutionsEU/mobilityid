@@ -97,7 +97,7 @@ And you can get the party ID ("NL-TNM") which you can use to map an EMA-ID to th
 
 ``` scala
 scala> emaId.partyId
-res13: com.thenewmotion.mobilityid.PartyId = NLTNM
+res13: com.thenewmotion.mobilityid.PartyId = NL-TNM
 ```
 
 ###### Notes
@@ -199,7 +199,7 @@ EVSE-ID to the operator of the EVSE (only ISO standard):
 
 ``` scala
 scala> evseIdIso.partyId
-res12: com.thenewmotion.mobilityid.PartyId = NLTNM
+res12: com.thenewmotion.mobilityid.PartyId = NL-TNM
 ```
 
 ###### Notes
@@ -218,7 +218,7 @@ scala> import com.thenewmotion.mobilityid.PartyId
 import com.thenewmotion.mobilityid.PartyId
 
 scala> val newMotionNetherlands = PartyId("NL*TNM").get
-newMotionNetherlands: com.thenewmotion.mobilityid.PartyId = NLTNM
+newMotionNetherlands: com.thenewmotion.mobilityid.PartyId = NL-TNM
 
 scala> EmaId("NL", "TNM", "000122045").partyId == newMotionNetherlands
 res4: Boolean = true
