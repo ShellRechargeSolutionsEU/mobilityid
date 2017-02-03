@@ -101,11 +101,10 @@ object PartyId {
     case ProviderIdImpl(partyCode) => PartyIdImpl(countryCode, partyCode)
   }
 
-  def apply(countryCode: CountryCode, providerId: OperatorIdIso): PartyId = providerId match {
+  def apply(countryCode: CountryCode, operatorId: OperatorIdIso): PartyId = operatorId match {
     case OperatorIdIsoImpl(partyCode) => PartyIdImpl(countryCode, partyCode)
   }
 
-  // TODO isn't this defined in mobilityid somewhere already?
   private val separators = Set('*', '-')
 }
 

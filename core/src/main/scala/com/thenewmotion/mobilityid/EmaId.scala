@@ -39,6 +39,8 @@ case class EmaId private (
       val dinCheck = instanceValue.substring(8, 9)
       Some(List(countryCode, providerId, dinInstance, dinCheck).mkString(separator))
     } else None
+
+  def partyId: PartyId = PartyId(countryCode, providerId)
 }
 
 object EmaId {

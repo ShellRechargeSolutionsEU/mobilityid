@@ -133,6 +133,8 @@ object EvseIdIso extends EvseIdFormat[EvseIdIso] {
 
 sealed trait EvseIdIso extends EvseId {
   def toCompactString: String = toString.replace(separator, "")
+
+  def partyId: PartyId
 }
 
 private case class EvseIdIsoImpl (
@@ -142,5 +144,7 @@ private case class EvseIdIsoImpl (
 ) extends EvseIdIso {
   override def normalizedId =
     Seq(countryCode, operatorId, EvseIdIso.IdType + powerOutletId).mkString(separator)
+
+  def partyId = PartyId(countryCode, operatorId)
 }
 

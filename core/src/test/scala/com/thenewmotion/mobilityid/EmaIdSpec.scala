@@ -85,5 +85,9 @@ class EmaIdSpec extends Specification {
 
       EmaId("NLTNM012345678") mustNotEqual EmaId("NLTNM876543210")
     }
+
+    "expose provider's party ID" in {
+      EmaId("NL", "TNM", "000722345").partyId mustEqual PartyId("NLTNM").get
+    }
   }
 }

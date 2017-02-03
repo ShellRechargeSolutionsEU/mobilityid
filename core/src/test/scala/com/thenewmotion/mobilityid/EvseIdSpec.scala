@@ -178,5 +178,9 @@ class EvseIdSpec extends Specification {
     "be case insensitive" in {
       EvseId("Nl", "tnM", "E000122045") mustEqual EvseId("NL", "TNM", "E000122045")
     }
+
+    "expose operator's party ID" in {
+      EvseIdIso("NL", "TNM", "000122045").partyId mustEqual PartyId("NLTNM").get
+    }
   }
 }
