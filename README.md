@@ -93,6 +93,18 @@ scala> emaId.toString
 res12: String = NL-TNM-012345678-W
 ```
 
+And you can get the party ID ("NL-TNM") which you can use to map an EMA-ID to the provider that issued the token:
+
+``` scala
+scala> emaId.partyId
+res13: com.thenewmotion.mobilityid.PartyId = NLTNM
+```
+
+###### Notes
+
+This library is using the algorithm of check digit calculation for ISO 15118-1 Contract IDs described here:
+http://www.ochp.eu/id-validator/e-mobility-ids_evcoid_check-digit-calculation_explanation/
+
 #### EVSE-ID ####
 
 You can create an EvseId object from a string in ISO 15118-1 or DIN SPEC 91286 format:
@@ -182,17 +194,40 @@ res11: String = +31*734*000122045
 
 ```
 
+And you can get the party ID ("NL-TNM") which you can use to map an
+EVSE-ID to the operator of the EVSE (only ISO standard):
 
-##### Notes
+``` scala
+scala> evseIdIso.partyId
+res12: com.thenewmotion.mobilityid.PartyId = NLTNM
+```
+
+###### Notes
 
 It is *NOT* possible to compare two EvseId objects where one is DIN format the other is ISO, as the 2 formats use different country identifiers and different operator codes
 
-### Documentation and getting help ###
 
-This library is using the algorithm of check digit calculation for ISO 15118-1 Contract IDs described here:
-http://www.ochp.eu/id-validator/e-mobility-ids_evcoid_check-digit-calculation_explanation/
+#### Party ID ####
 
-### Interpolators module
+As noted above, the library can give you `PartyId` instances representing the party that issued a token or operates an
+EVSE. You can also creates instances of these from a String, so you can check if a certain token comes from a known
+provider like this:
+
+``` scala
+scala> import com.thenewmotion.mobilityid.PartyId
+import com.thenewmotion.mobilityid.PartyId
+
+scala> val newMotionNetherlands = PartyId("NL*TNM").get
+newMotionNetherlands: com.thenewmotion.mobilityid.PartyId = NLTNM
+
+scala> EmaId("NL", "TNM", "000122045").partyId == newMotionNetherlands
+res4: Boolean = true
+
+scala> EmaId("DE", "8LN", "000001292").partyId == newMotionNetherlands
+res5: Boolean = false
+```
+
+#### Interpolators module ####
 
 Can be imported with this dependency
 
@@ -222,3 +257,4 @@ scala> emaId"ooopsie"
 scala> emaId"NL-TNM-000722345-X"
 res4: com.thenewmotion.mobilityid.EmaId = NL-TNM-000722345-X
 ```
+
