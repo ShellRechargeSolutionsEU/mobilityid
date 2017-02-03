@@ -23,7 +23,7 @@ class PartyIdSpec extends Specification {
     }
 
     "not parse various nonsense input strings" in {
-      val nonsenseIds = List("NLTNMA", "XYTNM", "NL%(@$", " NLTNM", "\u000aLTNM", "", "XY-TNMaaargh", "НЛ-TNM")
+      val nonsenseIds = List("NLTNMA", "XYTNM", "NL%(@$", " NLTNM", "\u000aLTNM", "", "XY-TNMaargh", "НЛ-TNM", "NLT-NM")
 
       nonsenseIds.map(PartyId.apply) must contain(beNone).foreach
     }

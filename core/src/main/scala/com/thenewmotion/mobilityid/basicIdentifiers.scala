@@ -88,17 +88,16 @@ private case class PartyIdImpl(countryCode: CountryCode, party: PartyCode) exten
 }
 
 object PartyId {
-  def apply(partyId: String): Option[PartyId] = {
-    val withoutSeparator = partyId.filterNot(separators.contains)
-    if (withoutSeparator.length != 5)
-      None
-    else try {
-      val cc = withoutSeparator.take(2)
-      val providerOrOperator = withoutSeparator.drop(2)
-      Some(PartyIdImpl(CountryCode(cc), PartyCode(providerOrOperator)))
-    } catch {
-      case e: IllegalArgumentException => None
-    }
+  private val Regex = s"([A-Za-z]{2})[-*]?${PartyCode.Regex}".r
+
+  def apply(partyId: String): Option[PartyId] = partyId match {
+    case Regex(cc, partyCode) =>
+      try {
+        Some(PartyIdImpl(CountryCode(cc), PartyCode(partyCode)))
+      } catch {
+        case e: IllegalArgumentException => None
+      }
+    case _ => None
   }
 
   def apply(countryCode: CountryCode, providerId: ProviderId): PartyId = providerId match {
@@ -108,8 +107,6 @@ object PartyId {
   def apply(countryCode: CountryCode, operatorId: OperatorIdIso): PartyId = operatorId match {
     case OperatorIdIsoImpl(partyCode) => PartyIdImpl(countryCode, partyCode)
   }
-
-  private val separators = Set('*', '-')
 }
 
 /**
