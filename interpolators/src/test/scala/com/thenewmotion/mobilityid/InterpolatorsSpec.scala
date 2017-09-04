@@ -1,17 +1,22 @@
 package com.thenewmotion.mobilityid
 
+import com.thenewmotion.mobilityid.ContractIdStandard.{DIN, EMI3, ISO}
 import org.specs2.mutable.Specification
 import interpolators._
 
 class InterpolatorsSpec extends Specification {
 
-  "EmaId" should {
-    "be creatable with interpolator" in {
-      emaId"NL-TNM-000722345-X" mustEqual EmaId("NL", "TNM", "000722345")
+  "Contract Id" should {
+    "be creatable with interpolator using ISO" in {
+      contractIdISO"NL-TNM-000722345-X" mustEqual ContractId[ISO]("NL", "TNM", "000722345")
     }
 
-    "be creatable with interpolator" in {
-      emaId"NLTNM000722345X" mustEqual EmaId("NL", "TNM", "000722345")
+    "be creatable with interpolator using DIN" in {
+      contractIdDIN"NL-TNM-722345-8" mustEqual ContractId[DIN]("NL", "TNM", "722345")
+    }
+
+    "be creatable with interpolator using EMI3" in {
+      contractIdEMI3"NL-TNM-C00722345-N" mustEqual ContractId[EMI3]("NL", "TNM", "C00722345")
     }
   }
 

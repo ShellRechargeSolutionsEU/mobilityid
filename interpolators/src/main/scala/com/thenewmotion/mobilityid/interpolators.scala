@@ -1,6 +1,8 @@
 package com.thenewmotion.mobilityid
 
+import ContractIdStandard.{DIN, EMI3, ISO}
 import contextual.{Interpolator, Prefix}
+import scala.util.{Try, Failure}
 
 object EvseIdInterpolator extends Interpolator {
   def contextualize(interpolation: StaticInterpolation) = {
@@ -47,20 +49,24 @@ object EvseIdDinInterpolator extends Interpolator {
     EvseIdDin(interpolation.literals.head).get
 }
 
-object EmaIdInterpolator extends Interpolator {
+class ContractIdInterpolator[T <: ContractIdStandard](implicit p: ContractIdParser[T]) extends Interpolator {
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, emaIdString) = interpolation.parts.head
-    EmaId(emaIdString) match {
-      case None => interpolation.abort(lit, 0, "not a valid EmaId")
+    Try(ContractId[T](emaIdString)) match {
+      case Failure(ex) => interpolation.abort(lit, 0, ex.getMessage)
       case _ =>
     }
 
     Nil
   }
 
-  def evaluate(interpolation: RuntimeInterpolation): EmaId =
-    EmaId(interpolation.literals.head).get
+  def evaluate(interpolation: RuntimeInterpolation): ContractId[T] =
+    ContractId[T](interpolation.literals.head)
 }
+
+object ContractIdIsoInterpolator extends ContractIdInterpolator[ISO]
+object ContractIdDinInterpolator extends ContractIdInterpolator[DIN]
+object ContractIdEmi3Interpolator extends ContractIdInterpolator[EMI3]
 
 object ProviderIdInterpolator extends Interpolator {
   def contextualize(interpolation: StaticInterpolation) = {
@@ -122,7 +128,9 @@ object interpolators {
     val evseId = Prefix(EvseIdInterpolator, sc)
     val evseIdIso = Prefix(EvseIdIsoInterpolator, sc)
     val evseIdDin = Prefix(EvseIdDinInterpolator, sc)
-    val emaId = Prefix(EmaIdInterpolator, sc)
+    val contractIdISO = Prefix(ContractIdIsoInterpolator, sc)
+    val contractIdDIN = Prefix(ContractIdDinInterpolator, sc)
+    val contractIdEMI3 = Prefix(ContractIdEmi3Interpolator, sc)
     val providerId = Prefix(ProviderIdInterpolator, sc)
     val countryCode = Prefix(CountryCodeInterpolator, sc)
     val phoneCountryCode = Prefix(PhoneCountryCodeInterpolator, sc)

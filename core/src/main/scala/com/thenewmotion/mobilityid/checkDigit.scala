@@ -1,6 +1,8 @@
 package com.thenewmotion.mobilityid
 
-private[mobilityid] object CheckDigit {
+import scala.annotation.tailrec
+
+private[mobilityid] object CheckDigitIso {
 
   import MatrixUtil._
   import LookupTables._
@@ -73,6 +75,41 @@ private[mobilityid] object MatrixUtil {
   val p2s: Array[Matrix] = Stream.iterate(p2)(_ * p2).take(14).toArray
 
   val negP2minus15 = Matrix(0, 2, 2, 1) // -p2^(-15)
+}
+
+private[mobilityid] object CheckDigitDin {
+
+  private val toNumericValue =
+    (('0' to '9') ++ ('A' to 'Z')).zipWithIndex.toMap
+
+  def apply(contractId: String): Char = {
+    def mult(value: Int, coeff: Int) = value * math.pow(2, coeff).toInt
+
+    val theString = contractId.toUpperCase
+    val lookupResults = theString map toNumericValue
+
+    @tailrec
+    def go(rest: IndexedSeq[Int], acc: Int, coefficient: Int): Int = {
+      if (rest.isEmpty) acc
+      else {
+        val current = rest.head
+        val (stepResult, newCoefficient) =
+          if (current < 10) {
+            val result = mult(current, coefficient)
+            (result, coefficient + 1)
+          } else {
+            val result = mult(current / 10, coefficient) + mult(current % 10, coefficient + 1)
+            (result, coefficient + 2)
+          }
+
+        go(rest.tail, acc + stepResult, newCoefficient)
+      }
+    }
+
+    val sum = go(lookupResults, 0, 0)
+    val mod = sum % 11
+    if (mod >= 10) 'X' else Character.forDigit(mod, 10)
+  }
 }
 
 
