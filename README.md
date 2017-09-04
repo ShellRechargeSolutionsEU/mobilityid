@@ -3,7 +3,7 @@
 ### About the library ###
 
 Scala utils to parse, validate and convert electric mobility account
-identifier strings according to the ISO 15118-1 and DIN SPEC 91286 standards.
+identifier strings according to the ISO 15118-1, DIN SPEC 91286 & EMI3 standards.
 
 ### Where to get it ###
 
@@ -16,87 +16,98 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.16"
+libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.18.0-SNAPSHOT"
 ```
 
 ### How to use ###
 
-#### EMA-ID ####
+#### Contract Id ####
 
-You can create an EmaId object from a string in ISO 15118-1 or DIN SPEC 91286 format:
+There are 3 types of Contract Id:
+* DIN SPEC 91286, also known as EVCO-ID, e.g. NL-TNM-012204-5
+* ISO 15118-1, also known as EMA-ID, e.g. NL-TNM-000122045-U
+* EMI3, e.g. NL-TNM-C00122045-K
+
+You can create an Contract Id object from a string in any of the 3 formats.  If you supply a check digit, it will be 
+validated.  If it is not supplied, it will be calculated.
 
 ``` scala
-scala> import com.thenewmotion.mobilityid._
+scala> import com.thenewmotion.mobilityid._, ContractIdStandard._
 import com.thenewmotion.mobilityid._
+import ContractIdStandard._
 
-scala> EmaId("NL-TNM-012204-5")
-res1: Option[com.thenewmotion.mobilityid.EmaId] = Some(NL-TNM-000122045-U)
+scala> ContractId[DIN]("NL-TNM-012204-5")
+res1: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.DIN] = NL-TNM-012204-5
 
-scala> EmaId("NL-TNM-000122045")
-res2: Option[com.thenewmotion.mobilityid.EmaId] = Some(NL-TNM-000122045-U)
+scala> ContractId[ISO]("NL-TNM-000122045")
+res2: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.ISO] = NL-TNM-000122045-U
+
+scala> ContractId[EMI3]("NL-TNM-C00122045")
+res3: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.EMI3] = NL-TNM-C00122045-K
 ```
 
 This fails because of an illegal character:
 
 ``` scala
-scala> EmaId("NL-T|M-000122045")
-res3: Option[com.thenewmotion.mobilityid.EmaId] = None
+scala> ContractId[ISO]("NL-T|M-000122045")
+java.lang.IllegalArgumentException: NL-T|M-000122045 is not a valid Contract Id for ISO 15118-1
 ```
 
-If you have more detailed field information you can create an EmaId from the separate fields:
+If you have more detailed field information you can create a ContractId from the separate fields, choosing whether to
+supply a check digit:
 
 ``` scala
-scala> EmaId("NL", "TNM", "000122045")
-res4: com.thenewmotion.mobilityid.EmaId = NL-TNM-000122045-U
+scala> ContractId[ISO]("NL", "TNM", "000122045")
+res4: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.ISO] = NL-TNM-000122045-U
 
-scala> EmaId("NL", "TNM", "000122045", 'U')
-res5: com.thenewmotion.mobilityid.EmaId = NL-TNM-000122045-U
+scala> ContractId[ISO]("NL", "TNM", "000122045", 'U')
+res5: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.ISO] = NL-TNM-000122045-U
 ```
 
 This fails because of an invalid check digit:
 
 ``` scala
-scala> EmaId("NL", "TNM", "000122045", 'X')
-java.lang.IllegalArgumentException: requirement failed
+scala> ContractId[ISO]("NL", "TNM", "000122045", 'X')
+java.lang.IllegalArgumentException: Given check digit 'X' is not equal to computed 'U'
 ```
 
 This fails because of an illegal character:
 
 ```  scala
-scala> EmaId("NL", "T|M", "000122045")
-java.lang.IllegalArgumentException: requirement failed
+scala> ContractId[ISO]("NL", "T|M", "000122045")
+java.lang.IllegalArgumentException: OperatorId must have a length of 3 and be ASCII letters or digits
 ```
 
-Once you have an EmaId object you can use it for intelligent comparison (checking if DIN ID equals an ISO ID):
+Once you have an ContractId object you can convert it to another format:
 
 ``` scala
-scala> EmaId("NL-TNM-000122045") == EmaId("NL-TNM-012204-5")
-res8: Boolean = true
+scala> ContractId[ISO]("NL-TNM-000122045").convertTo[DIN]
+res1:  com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.DIN] = NL-TNM-012204-5
+
+scala> ContractId[DIN]("NL-TNM-012204-5").convertTo[EMI3]
+res2: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.EMI3] = NL-TNM-C00122045-K
 ```
 
-Also you can print them in various formats (note that EMA ID cannot be represented in DIN format):
+Also you can print them in various formats
 
 ``` scala
-scala> val emaId = EmaId("NL", "TNM", "012345678")
-emaId: com.thenewmotion.mobilityid.EmaId = NL-TNM-012345678-W
+scala> val contractId = ContractId[ISO]("NL", "TNM", "012345678")
+contractId: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.ISO] = NL-TNM-012345678-W
 
-scala> emaId.toDinString
-res9: Option[String] = None
-
-scala> emaId.toCompactString
+scala> contractId.toCompactString
 res10: String = NLTNM012345678W
 
-scala> emaId.toCompactStringWithoutCheckDigit
+scala> contractId.toCompactStringWithoutCheckDigit
 res11: String = NLTNM012345678
 
-scala> emaId.toString
+scala> contractId.toString
 res12: String = NL-TNM-012345678-W
 ```
 
-And you can get the party ID ("NL-TNM") which you can use to map an EMA-ID to the provider that issued the token:
+And you can get the party ID ("NL-TNM") which you can use to map a Contract Id to the provider that issued the token:
 
 ``` scala
-scala> emaId.partyId
+scala> contractId.partyId
 res13: com.thenewmotion.mobilityid.PartyId = NL-TNM
 ```
 
@@ -104,6 +115,39 @@ res13: com.thenewmotion.mobilityid.PartyId = NL-TNM
 
 This library is using the algorithm of check digit calculation for ISO 15118-1 Contract IDs described here:
 http://www.ochp.eu/id-validator/e-mobility-ids_evcoid_check-digit-calculation_explanation/
+
+###### Changelog
+
+`ContractId[ISO]` is roughly equivalent to the old `EmaId` class. 
+
+`EmaId` could parse both DIN and ISO format, converting the former to the latter on the fly, e.g.
+
+``` scala
+scala> EmaId("NL-TNM-012204-5")
+res0: com.thenewmotion.mobilityid.EmaId = NL-TNM-000122045-U
+```
+
+This will fail if replaced with `ContractId[ISO]` directly:
+
+``` scala
+scala> ContractId[ISO]("NL-TNM-012204-5")
+java.lang.IllegalArgumentException: NL-TNM-012204-5 is not a valid Contract Id for ISO 15118-1
+```
+  
+It is now necessary to parse the DIN and convert it to another format, e.g.
+
+``` scala
+scala> ContractId[DIN]("NL-TNM-012204-5").convertTo[ISO]
+res0: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.ISO] = NL-TNM-000122045-U
+```
+
+Note that conversion from DIN to ISO format (as defined at https://github.com/e-clearing-net/OCHP/blob/master/OCHP.md#contractid-or-evco-id) 
+is deprecated, and it is better to convert from DIN to EMI3 (as defined at http://emi3group.com/documents-links/)
+
+``` scala
+scala> ContractId[DIN]("NL-TNM-012204-5").convertTo[EMI3]
+res1: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.EMI3] = NL-TNM-C00122045-K
+```
 
 #### EVSE-ID ####
 
@@ -220,10 +264,10 @@ import com.thenewmotion.mobilityid.PartyId
 scala> val newMotionNetherlands = PartyId("NL*TNM").get
 newMotionNetherlands: com.thenewmotion.mobilityid.PartyId = NL-TNM
 
-scala> EmaId("NL", "TNM", "000122045").partyId == newMotionNetherlands
+scala> ContractId[ISO]("NL", "TNM", "000122045").partyId == newMotionNetherlands
 res4: Boolean = true
 
-scala> EmaId("DE", "8LN", "000001292").partyId == newMotionNetherlands
+scala> ContractId[ISO]("DE", "8LN", "000001292").partyId == newMotionNetherlands
 res5: Boolean = false
 ```
 
@@ -249,12 +293,11 @@ scala> evseId"ABC"
 scala> evseId"NL*TNM*E840*6487"
 res2: com.thenewmotion.mobilityid.EvseId = NL*TNM*E840*6487
 
-scala> emaId"ooopsie"
-<console>:11: error: not a valid EmaId
-              emaId"ooopsie"
-                    ^
+scala> contractIdISO"ooopsie"
+<console>:11: error: ooopsie is not a valid Contract Id for ISO 15118-1
+                     contractIdISO"ooopsie"
 
-scala> emaId"NL-TNM-000722345-X"
-res4: com.thenewmotion.mobilityid.EmaId = NL-TNM-000722345-X
+scala> contractIdISO"NL-TNM-000722345-X"
+res4: com.thenewmotion.mobilityid.ContractId[com.thenewmotion.mobilityid.ContractIdStandard.ISO] = NL-TNM-000722345-X
 ```
 
