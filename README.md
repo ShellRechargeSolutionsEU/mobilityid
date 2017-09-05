@@ -16,7 +16,7 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.18.0-SNAPSHOT"
+libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.18.0"
 ```
 
 ### How to use ###
