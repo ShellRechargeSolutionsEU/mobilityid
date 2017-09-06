@@ -276,7 +276,7 @@ res5: Boolean = false
 Can be imported with this dependency
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid-interpolators" % "0.16"
+libraryDependencies += "com.thenewmotion" %% "mobilityid-interpolators" % "0.18.0"
 ```
 
 then it can be used like this:
