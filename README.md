@@ -1,4 +1,4 @@
-## Mobility ID Utils [![Build Status](https://travis-ci.org/thenewmotion/mobilityid.png?branch=master)](https://travis-ci.org/thenewmotion/mobilityid)
+## Mobility ID Utils [![Build Status](https://travis-ci.org/NewMotion/mobilityid.png?branch=master)](https://travis-ci.org/NewMotion/mobilityid)
 
 ### About the library ###
 
