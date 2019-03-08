@@ -23,6 +23,10 @@ class EvseIdSpec extends Specification {
         EvseId("DE*AB7*E1234567890ABCDEFGHIJ1234567890") must beSome
       }
 
+      "Accept asterisk directly after the E" in {
+        EvseId("DE*DES*E*BMW*0113*2") must beSome
+      }
+
       "Reject an ISO EvseId String that is too long" in {
         val tooLongOutledId = Seq.fill(32)(7).mkString
         EvseId(s"DE*AB7*E$tooLongOutledId") must beNone

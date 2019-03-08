@@ -120,7 +120,7 @@ object EvseIdIso extends EvseIdFormat[EvseIdIso] {
   val CountryCodeRegex = CountryCode.Regex
   val OperatorCode = PartyCode.Regex
   val IdType = "E"
-  val PowerOutletId = """([A-Za-z0-9][A-Za-z0-9\*]{0,30})""".r
+  val PowerOutletId = """([A-Za-z0-9\*]{1,30})""".r
   val EvseIdRegex = s"""$CountryCodeRegex\\*?$OperatorCode\\*?$IdType$PowerOutletId""".r
 
   def apply(cc: CountryCode, o: OperatorIdIso, powerOutletId: String): EvseIdIso =
