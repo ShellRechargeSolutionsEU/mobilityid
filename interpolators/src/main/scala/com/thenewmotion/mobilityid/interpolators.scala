@@ -5,6 +5,9 @@ import contextual.{Interpolator, Prefix}
 import scala.util.{Try, Failure}
 
 object EvseIdInterpolator extends Interpolator {
+
+  type Output = EvseId
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, evseIdString) = interpolation.parts.head
     EvseId(evseIdString) match {
@@ -20,6 +23,9 @@ object EvseIdInterpolator extends Interpolator {
 }
 
 object EvseIdIsoInterpolator extends Interpolator {
+
+  type Output = EvseIdIso
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, evseIdString) = interpolation.parts.head
     EvseIdIso(evseIdString) match {
@@ -35,6 +41,9 @@ object EvseIdIsoInterpolator extends Interpolator {
 }
 
 object EvseIdDinInterpolator extends Interpolator {
+
+  type Output = EvseIdDin
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, evseIdString) = interpolation.parts.head
     EvseIdDin(evseIdString) match {
@@ -50,6 +59,7 @@ object EvseIdDinInterpolator extends Interpolator {
 }
 
 class ContractIdInterpolator[T <: ContractIdStandard](implicit p: ContractIdParser[T]) extends Interpolator {
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, emaIdString) = interpolation.parts.head
     Try(ContractId[T](emaIdString)) match {
@@ -64,11 +74,20 @@ class ContractIdInterpolator[T <: ContractIdStandard](implicit p: ContractIdPars
     ContractId[T](interpolation.literals.head)
 }
 
-object ContractIdIsoInterpolator extends ContractIdInterpolator[ISO]
-object ContractIdDinInterpolator extends ContractIdInterpolator[DIN]
-object ContractIdEmi3Interpolator extends ContractIdInterpolator[EMI3]
+object ContractIdIsoInterpolator extends ContractIdInterpolator[ISO] {
+  type Output = ContractId[ISO]
+}
+object ContractIdDinInterpolator extends ContractIdInterpolator[DIN] {
+  type Output = ContractId[DIN]
+}
+object ContractIdEmi3Interpolator extends ContractIdInterpolator[EMI3] {
+  type Output = ContractId[EMI3]
+}
 
 object ProviderIdInterpolator extends Interpolator {
+
+  type Output = ProviderId
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, providerIdString) = interpolation.parts.head
     if (!ProviderId.isValid(providerIdString)) interpolation.abort(lit, 0, "not a valid ProviderId")
@@ -80,6 +99,9 @@ object ProviderIdInterpolator extends Interpolator {
 }
 
 object CountryCodeInterpolator extends Interpolator {
+
+  type Output = CountryCode
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, countryCodeString) = interpolation.parts.head
     if (!CountryCode.isValid(countryCodeString)) interpolation.abort(lit, 0, "not a valid CountryCode")
@@ -91,6 +113,9 @@ object CountryCodeInterpolator extends Interpolator {
 }
 
 object PhoneCountryCodeInterpolator extends Interpolator {
+
+  type Output = PhoneCountryCode
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, phoneCountryCodeString) = interpolation.parts.head
     if (!PhoneCountryCode.isValid(phoneCountryCodeString)) interpolation.abort(lit, 0, "not a valid PhoneCountryCode")
@@ -102,6 +127,9 @@ object PhoneCountryCodeInterpolator extends Interpolator {
 }
 
 object OperatorIdIsoInterpolator extends Interpolator {
+
+  type Output = OperatorIdIso
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, operatorIdIso) = interpolation.parts.head
     if (!OperatorIdIso.isValid(operatorIdIso)) interpolation.abort(lit, 0, "not a valid OperatorIdIso")
@@ -113,6 +141,9 @@ object OperatorIdIsoInterpolator extends Interpolator {
 }
 
 object OperatorIdDinInterpolator extends Interpolator {
+
+  type Output = OperatorIdDin
+
   def contextualize(interpolation: StaticInterpolation) = {
     val lit@Literal(_, operatorIdDin) = interpolation.parts.head
     if (!OperatorIdDin.isValid(operatorIdDin)) interpolation.abort(lit, 0, "not a valid OperatorIdDin")

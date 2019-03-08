@@ -1,6 +1,6 @@
 resolvers += "TNM" at "https://nexus.thenewmotion.com/content/groups/public"
 
-addSbtPlugin("com.newmotion" % "sbt-build-seed" % "3.1.0")
+addSbtPlugin("com.newmotion" % "sbt-build-seed" % "4.1.4")
 
 // https://github.com/rtimush/sbt-updates
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.0")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.0")
