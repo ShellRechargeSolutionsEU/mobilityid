@@ -27,6 +27,10 @@ class EvseIdSpec extends Specification {
         EvseId("DE*DES*E*BMW*0113*2") must beSome
       }
 
+      "Accept DE*TNM*ETWL*HEDWIGLAUDIENRING*LS12001*0" in {
+        EvseId("DE*TNM*ETWL*HEDWIGLAUDIENRING*LS12001*0") must beSome
+      }
+
       "Reject an ISO EvseId String that is too long" in {
         val tooLongOutledId = Seq.fill(32)(7).mkString
         EvseId(s"DE*AB7*E$tooLongOutledId") must beNone
