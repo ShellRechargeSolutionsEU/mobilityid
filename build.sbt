@@ -5,6 +5,10 @@ val commonSettings = Seq(
 
 val specs2 = "org.specs2" %% "specs2-core" % "4.4.1" % "test"
 
+lazy val scala212 = "2.12.8"
+lazy val scala211 = "2.11.12"
+lazy val supportedScalaVersions = List(scala212, scala211)
+
 val `core` = project
   .enablePlugins(OssLibPlugin)
   .settings(
@@ -12,7 +16,8 @@ val `core` = project
     commonSettings,
     libraryDependencies ++= Seq(
       specs2
-    )
+    ),
+    crossScalaVersions := supportedScalaVersions
   )
 
 val `interpolators` = project
