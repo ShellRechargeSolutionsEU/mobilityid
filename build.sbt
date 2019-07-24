@@ -10,6 +10,7 @@ val `core` = project
   .settings(
     name := "mobilityid",
     commonSettings,
+    initialCommands in console := "import com.thenewmotion.mobilityid._, ContractIdStandard._",
     libraryDependencies ++= Seq(
       specs2
     )

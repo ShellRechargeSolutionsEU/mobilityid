@@ -32,8 +32,9 @@ You can create an Contract Id object from a string in any of the 3 formats.  If 
 validated.  If it is not supplied, it will be calculated.
 
 ``` scala
-scala> import com.thenewmotion.mobilityid._, ContractIdStandard._
-import com.thenewmotion.mobilityid._
+mobilityid> project core
+mobilityid> console
+scala> import com.thenewmotion.mobilityid._
 import ContractIdStandard._
 
 scala> ContractId[DIN]("NL-TNM-012204-5")
