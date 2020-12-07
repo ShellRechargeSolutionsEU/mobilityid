@@ -16,7 +16,7 @@ resolvers += "The New Motion Public Repo" at "http://nexus.thenewmotion.com/cont
 And use the following library dependency:
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid" % "0.18.0"
+libraryDependencies += "com.thenewmotion" %% "mobilityid" % "1.0.0"
 ```
 
 ### How to use ###
@@ -277,7 +277,7 @@ res5: Boolean = false
 Can be imported with this dependency
 
 ``` scala
-libraryDependencies += "com.thenewmotion" %% "mobilityid-interpolators" % "0.18.0"
+libraryDependencies += "com.thenewmotion" %% "mobilityid-interpolators" % "1.0.0"
 ```
 
 then it can be used like this:
