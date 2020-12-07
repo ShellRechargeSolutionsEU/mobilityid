@@ -50,7 +50,7 @@ private[mobilityid] object LookupTables {
     'R' -> 3, 'S' -> 19, 'T' -> 35,
     'U' -> 7, 'V' -> 23, 'W' -> 39,
     'X' -> 11, 'Y' -> 27, 'Z' -> 43
-  ).mapValues(decode)
+  ).mapValues(decode).toMap
 
   val decoding: Map[Matrix, Char] = encoding.map(_.swap)
 }
