@@ -30,11 +30,10 @@ private case class CountryCodeImpl(cc: String) extends CountryCode {
 object CountryCode {
   val Regex = """([A-Za-z]{2})""".r
 
-  lazy val isoCountries: Array[String] = Locale.getISOCountries
-  private val isoCountriesSet = isoCountries.toSet
+  lazy val isoCountries: Set[String] = Locale.getISOCountries.toSet
 
   def isValid(countryCode: String): Boolean = countryCode match {
-    case Regex(_) if isoCountriesSet.contains(countryCode.toUpperCase) => true
+    case Regex(_) if isoCountries.contains(countryCode.toUpperCase) => true
     case _ => false
   }
 
